@@ -1509,15 +1509,618 @@
             );
         }
 
-        // Continuing with remaining sections in next message due to length...
-        // (ExemplarsSection, ComparisonSection, OS1DeepDive, ModelingSection, ArgumentAnalysisSection, SynthesisSection)
-        // These remain unchanged from original but with accessibility enhancements
+        // EXEMPLARS SECTION
+        function ExemplarsSection({ philosophers, completedViews, setCompletedViews, onComplete, onNext }) {
+            const [selectedPhil, setSelectedPhil] = useState(null);
+            const philosopherList = Object.keys(philosophers);
+            const allViewed = philosopherList.every(p => completedViews.has(p));
 
-        // [The remaining sections will be included in the file but are too long to show in this response]
-        // I'll include placeholder comments here and complete file will have all sections
+            if (selectedPhil) {
+                const phil = philosophers[selectedPhil];
+                return (
+                    <div className="bg-white rounded-lg shadow-lg p-8">
+                        <button
+                            onClick={() => setSelectedPhil(null)}
+                            className="mb-4 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg"
+                        >
+                            ← Back to All
+                        </button>
 
-        // Include all remaining section components here...
-        // ExemplarsSection, ComparisonSection, OS1DeepDive, ModelingSection, ArgumentAnalysisSection, SynthesisSection
+                        <div className="flex items-center space-x-4 mb-6">
+                            <div className="text-6xl">{phil.image}</div>
+                            <div>
+                                <h2 className="text-3xl font-bold text-gray-900">{phil.name}</h2>
+                                <p className="text-lg text-gray-600">{phil.era}</p>
+                                <p className="text-md text-purple-600 font-semibold">{phil.region}</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 rounded-lg p-6 mb-6">
+                            <h3 className="text-2xl font-bold text-purple-900 mb-4">Formal Model</h3>
+                            <div className="space-y-3">
+                                {Object.entries(phil.model).map(([key, value]) => (
+                                    <div key={key} className="bg-white p-3 rounded-lg">
+                                        <span className="bg-purple-100 text-purple-900 font-mono text-xs px-2 py-1 rounded mr-2">
+                                            {key}
+                                        </span>
+                                        {Array.isArray(value) ? (
+                                            <ul className="text-sm text-gray-700 mt-2">
+                                                {value.map((v, i) => <li key={i}>• {v}</li>)}
+                                            </ul>
+                                        ) : (
+                                            <span className="text-sm text-gray-700">{value}</span>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-4 mb-6">
+                            <div className="bg-green-50 p-4 rounded-lg">
+                                <h4 className="font-bold text-green-900 mb-2">Key Insights</h4>
+                                <ul className="text-sm text-gray-700 space-y-1">
+                                    {phil.keyInsights.map((insight, i) => <li key={i}>• {insight}</li>)}
+                                </ul>
+                            </div>
+                            <div className="bg-yellow-50 p-4 rounded-lg">
+                                <h4 className="font-bold text-yellow-900 mb-2">Limitations</h4>
+                                <ul className="text-sm text-gray-700 space-y-1">
+                                    {phil.limitations.map((limit, i) => <li key={i}>• {limit}</li>)}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={() => setSelectedPhil(null)}
+                            className="w-full px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                        >
+                            View All Philosophers
+                        </button>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="bg-white rounded-lg shadow-lg p-8">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-4">Philosopher Exemplars</h2>
+                    <p className="text-lg text-gray-700 mb-6">
+                        Study these diverse thinkers to see how different standpoints reveal different aspects of reality.
+                    </p>
+
+                    <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+                        <p className="text-sm">
+                            Progress: {completedViews.size} of {philosopherList.length} viewed
+                            {allViewed && " ✓ All viewed!"}
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        {philosopherList.map(philKey => {
+                            const phil = philosophers[philKey];
+                            const viewed = completedViews.has(philKey);
+                            
+                            return (
+                                <div
+                                    key={philKey}
+                                    className={`border-2 rounded-lg p-6 ${viewed ? 'border-green-400' : 'border-gray-300'}`}
+                                >
+                                    <div className="text-center mb-4">
+                                        <div className="text-5xl mb-3">{phil.image}</div>
+                                        <h3 className="text-xl font-bold">{phil.name}</h3>
+                                        <p className="text-sm text-gray-600">{phil.era}</p>
+                                        <p className="text-xs text-purple-600 font-semibold">{phil.region}</p>
+                                    </div>
+                                    <button
+                                        onClick={() => {
+                                            setSelectedPhil(philKey);
+                                            setCompletedViews(new Set([...completedViews, philKey]));
+                                        }}
+                                        className={`w-full px-4 py-2 rounded-lg font-semibold ${
+                                            viewed ? 'bg-green-100 text-green-700' : 'bg-purple-600 text-white hover:bg-purple-700'
+                                        }`}
+                                    >
+                                        {viewed ? '✓ View Again' : 'View Model'}
+                                    </button>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {allViewed && (
+                        <button
+                            onClick={() => { onComplete(); onNext(); }}
+                            className="w-full px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                        >
+                            Continue to Comparative Analysis →
+                        </button>
+                    )}
+                </div>
+            );
+        }
+
+        // OS1 DEEP DIVE COMPONENT
+        function OS1DeepDive({ phil1Key, phil2Key, p1, p2 }) {
+            const getOS1Analysis = (phil) => {
+                const spts = Array.isArray(phil.model.SPTS) ? phil.model.SPTS : [phil.model.SPTS];
+                const primarySPTS = spts[0] || "their position";
+                
+                return {
+                    canSee: phil.model.PRS_t,
+                    blindSpots: phil.whatExcluded,
+                    standpoint: primarySPTS,
+                    filters: phil.model.BROAPlus
+                };
+            };
+
+            const os1_p1 = getOS1Analysis(p1);
+            const os1_p2 = getOS1Analysis(p2);
+
+            return (
+                <div className="space-y-6 mb-6 fade-in">
+                    <div className="bg-gradient-to-br from-indigo-100 to-purple-100 border-2 border-indigo-400 rounded-lg p-6">
+                        <h3 className="text-2xl font-bold text-indigo-900 mb-4">🔍 OS1 DEEP DIVE: Why They'd Disagree</h3>
+                        <p className="text-gray-700">
+                            This shows how each philosopher's lived experience (OS1) shapes what they can see—and why they'd disagree.
+                        </p>
+                    </div>
+
+                    <div className="bg-white border-2 border-gray-300 rounded-lg p-6">
+                        <h4 className="text-xl font-bold text-gray-900 mb-4">What Each Can See</h4>
+                        
+                        <div className="grid md:grid-cols-2 gap-6">
+                            <div className="bg-blue-50 p-4 rounded-lg">
+                                <h5 className="font-bold text-blue-900 mb-3">{p1.name}'s Standpoint</h5>
+                                <p className="text-sm text-gray-700"><strong>From:</strong> {os1_p1.standpoint}</p>
+                                <p className="text-sm text-gray-700 mt-2"><strong>Sees:</strong> {os1_p1.canSee}</p>
+                                <p className="text-xs text-red-700 mt-2"><strong>Misses:</strong> {os1_p1.blindSpots}</p>
+                            </div>
+
+                            <div className="bg-purple-50 p-4 rounded-lg">
+                                <h5 className="font-bold text-purple-900 mb-3">{p2.name}'s Standpoint</h5>
+                                <p className="text-sm text-gray-700"><strong>From:</strong> {os1_p2.standpoint}</p>
+                                <p className="text-sm text-gray-700 mt-2"><strong>Sees:</strong> {os1_p2.canSee}</p>
+                                <p className="text-xs text-red-700 mt-2"><strong>Misses:</strong> {os1_p2.blindSpots}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // COMPARISON SECTION
+        function ComparisonSection({ philosophers, comparisonPair, setComparisonPair, onComplete, onNext }) {
+            const [phil1, setPhil1] = useState(comparisonPair[0]);
+            const [phil2, setPhil2] = useState(comparisonPair[1]);
+            const [showAnalysis, setShowAnalysis] = useState(false);
+            const [showDeepDive, setShowDeepDive] = useState(false);
+            const philosopherList = Object.keys(philosophers);
+
+            if (showAnalysis && phil1 && phil2) {
+                const p1 = philosophers[phil1];
+                const p2 = philosophers[phil2];
+
+                return (
+                    <div className="bg-white rounded-lg shadow-lg p-8">
+                        <button
+                            onClick={() => { setShowAnalysis(false); setShowDeepDive(false); }}
+                            className="mb-4 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg"
+                        >
+                            ← Choose Different Pair
+                        </button>
+
+                        <h2 className="text-3xl font-bold text-gray-900 mb-6">Comparative Analysis</h2>
+
+                        <div className="grid md:grid-cols-2 gap-6 mb-8">
+                            <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-6 text-center">
+                                <div className="text-5xl mb-3">{p1.image}</div>
+                                <h3 className="text-2xl font-bold">{p1.name}</h3>
+                                <p className="text-sm text-gray-600">{p1.era}</p>
+                            </div>
+                            <div className="bg-purple-50 border-2 border-purple-300 rounded-lg p-6 text-center">
+                                <div className="text-5xl mb-3">{p2.image}</div>
+                                <h3 className="text-2xl font-bold">{p2.name}</h3>
+                                <p className="text-sm text-gray-600">{p2.era}</p>
+                            </div>
+                        </div>
+
+                        {!showDeepDive && (
+                            <button
+                                onClick={() => setShowDeepDive(true)}
+                                className="w-full mb-6 px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700"
+                            >
+                                🔍 OS1 Deep Dive: Why They'd Disagree
+                            </button>
+                        )}
+
+                        {showDeepDive && <OS1DeepDive phil1Key={phil1} phil2Key={phil2} p1={p1} p2={p2} />}
+
+                        <div className="flex space-x-4 mt-6">
+                            <button
+                                onClick={() => { setShowAnalysis(false); setShowDeepDive(false); }}
+                                className="flex-1 px-6 py-3 bg-gray-300 hover:bg-gray-400 rounded-lg font-semibold"
+                            >
+                                Compare Different Pair
+                            </button>
+                            <button
+                                onClick={() => { onComplete(); onNext(); }}
+                                className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                            >
+                                Continue to Modeling →
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="bg-white rounded-lg shadow-lg p-8">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-4">Comparative Analysis Tool</h2>
+                    
+                    <div className="grid md:grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <h3 className="text-xl font-bold mb-4">Select First Philosopher</h3>
+                            <div className="space-y-3">
+                                {philosopherList.map(philKey => {
+                                    const phil = philosophers[philKey];
+                                    return (
+                                        <button
+                                            key={philKey}
+                                            onClick={() => setPhil1(philKey)}
+                                            className={`w-full text-left p-4 rounded-lg border-2 ${
+                                                phil1 === philKey ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+                                            }`}
+                                        >
+                                            <div className="flex items-center space-x-3">
+                                                <span className="text-3xl">{phil.image}</span>
+                                                <span className="font-semibold">{phil.name}</span>
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 className="text-xl font-bold mb-4">Select Second Philosopher</h3>
+                            <div className="space-y-3">
+                                {philosopherList.map(philKey => {
+                                    const phil = philosophers[philKey];
+                                    return (
+                                        <button
+                                            key={philKey}
+                                            onClick={() => setPhil2(philKey)}
+                                            className={`w-full text-left p-4 rounded-lg border-2 ${
+                                                phil2 === philKey ? 'border-purple-500 bg-purple-50' : 'border-gray-300'
+                                            }`}
+                                        >
+                                            <div className="flex items-center space-x-3">
+                                                <span className="text-3xl">{phil.image}</span>
+                                                <span className="font-semibold">{phil.name}</span>
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={() => {
+                            if (phil1 && phil2 && phil1 !== phil2) {
+                                setComparisonPair([phil1, phil2]);
+                                setShowAnalysis(true);
+                            }
+                        }}
+                        disabled={!phil1 || !phil2 || phil1 === phil2}
+                        className={`w-full px-6 py-3 rounded-lg font-semibold ${
+                            phil1 && phil2 && phil1 !== phil2
+                                ? 'bg-purple-600 text-white hover:bg-purple-700'
+                                : 'bg-gray-300 text-gray-500'
+                        }`}
+                    >
+                        Compare These Philosophers →
+                    </button>
+                </div>
+            );
+        }
+
+        // MODELING SECTION
+        function ModelingSection({ studentModels, setStudentModels, onComplete, onNext }) {
+            const [model, setModel] = useState({
+                name: '', IK: '', PRS_t: '', SPTS: [''], AH: '', Capab: '', Cons: ''
+            });
+            const [submitted, setSubmitted] = useState(false);
+
+            const isComplete = model.name && model.IK && model.PRS_t && model.SPTS[0] && model.AH && model.Capab && model.Cons;
+
+            if (submitted) {
+                return (
+                    <div className="bg-white rounded-lg shadow-lg p-8">
+                        <div className="text-center mb-8">
+                            <div className="text-6xl mb-4">✅</div>
+                            <h2 className="text-3xl font-bold text-gray-900 mb-4">Model Created!</h2>
+                        </div>
+
+                        <div className="flex space-x-4">
+                            <button
+                                onClick={() => {
+                                    setSubmitted(false);
+                                    setModel({ name: '', IK: '', PRS_t: '', SPTS: [''], AH: '', Capab: '', Cons: '' });
+                                }}
+                                className="flex-1 px-6 py-3 bg-gray-300 hover:bg-gray-400 rounded-lg font-semibold"
+                            >
+                                Model Another
+                            </button>
+                            <button
+                                onClick={() => { onComplete(); onNext(); }}
+                                className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                            >
+                                Continue to Arguments →
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="bg-white rounded-lg shadow-lg p-8">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-4">Build Your Own Model</h2>
+                    
+                    <div className="space-y-4">
+                        <input
+                            type="text"
+                            placeholder="Name *"
+                            className="w-full px-4 py-2 border rounded-lg"
+                            value={model.name}
+                            onChange={(e) => setModel({...model, name: e.target.value})}
+                        />
+                        <textarea
+                            placeholder="IK: Core commitments *"
+                            className="w-full px-4 py-2 border rounded-lg"
+                            rows="2"
+                            value={model.IK}
+                            onChange={(e) => setModel({...model, IK: e.target.value})}
+                        />
+                        <textarea
+                            placeholder="PRS_t: What's visible to them *"
+                            className="w-full px-4 py-2 border rounded-lg"
+                            rows="2"
+                            value={model.PRS_t}
+                            onChange={(e) => setModel({...model, PRS_t: e.target.value})}
+                        />
+                        <input
+                            type="text"
+                            placeholder="SPTS: Standpoint *"
+                            className="w-full px-4 py-2 border rounded-lg"
+                            value={model.SPTS[0]}
+                            onChange={(e) => setModel({...model, SPTS: [e.target.value]})}
+                        />
+                        <textarea
+                            placeholder="AH: Assembly history *"
+                            className="w-full px-4 py-2 border rounded-lg"
+                            rows="2"
+                            value={model.AH}
+                            onChange={(e) => setModel({...model, AH: e.target.value})}
+                        />
+                        <textarea
+                            placeholder="Capab: Reliable methods *"
+                            className="w-full px-4 py-2 border rounded-lg"
+                            rows="2"
+                            value={model.Capab}
+                            onChange={(e) => setModel({...model, Capab: e.target.value})}
+                        />
+                        <textarea
+                            placeholder="Cons: Procedures that persist *"
+                            className="w-full px-4 py-2 border rounded-lg"
+                            rows="2"
+                            value={model.Cons}
+                            onChange={(e) => setModel({...model, Cons: e.target.value})}
+                        />
+                    </div>
+
+                    <button
+                        onClick={() => {
+                            if (isComplete) {
+                                setStudentModels({...studentModels, [Date.now()]: model});
+                                setSubmitted(true);
+                            }
+                        }}
+                        disabled={!isComplete}
+                        className={`mt-6 w-full px-6 py-3 rounded-lg font-semibold ${
+                            isComplete ? 'bg-purple-600 text-white hover:bg-purple-700' : 'bg-gray-300 text-gray-500'
+                        }`}
+                    >
+                        {isComplete ? 'Submit Model →' : 'Complete Required Fields'}
+                    </button>
+                </div>
+            );
+        }
+
+        // ARGUMENT ANALYSIS SECTION
+        function ArgumentAnalysisSection({ philosophers, onComplete, onNext }) {
+            const [selectedPhil, setSelectedPhil] = useState(null);
+            const philosopherList = Object.keys(philosophers);
+
+            if (selectedPhil) {
+                const phil = philosophers[selectedPhil];
+                const arg = phil.toulminArguments[0];
+
+                return (
+                    <div className="bg-white rounded-lg shadow-lg p-8">
+                        <button
+                            onClick={() => setSelectedPhil(null)}
+                            className="mb-4 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg"
+                        >
+                            ← Back to All
+                        </button>
+
+                        <div className="flex items-center space-x-4 mb-6">
+                            <div className="text-6xl">{phil.image}</div>
+                            <div>
+                                <h2 className="text-3xl font-bold text-gray-900">{phil.name}</h2>
+                                <p className="text-lg text-gray-600">Toulmin Argument</p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-6">
+                            <div className="bg-blue-50 border-2 border-blue-400 rounded-lg p-6">
+                                <h3 className="text-xl font-bold text-blue-900 mb-2">📍 CLAIM</h3>
+                                <p className="text-gray-800 font-semibold">{arg.claim}</p>
+                            </div>
+
+                            <div className="bg-green-50 border-2 border-green-300 rounded-lg p-6">
+                                <h3 className="text-xl font-bold text-green-900 mb-3">🔍 GROUNDS</h3>
+                                <ul className="space-y-2">
+                                    {arg.grounds.map((ground, i) => (
+                                        <li key={i} className="text-gray-700">• {ground}</li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            <div className="bg-purple-50 border-2 border-purple-300 rounded-lg p-6">
+                                <h3 className="text-xl font-bold text-purple-900 mb-3">🔗 WARRANT</h3>
+                                <p className="text-gray-800">{arg.warrant}</p>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={() => setSelectedPhil(null)}
+                            className="mt-6 w-full px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                        >
+                            View Another
+                        </button>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="bg-white rounded-lg shadow-lg p-8">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-4">Argument Analysis</h2>
+                    
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        {philosopherList.map(philKey => {
+                            const phil = philosophers[philKey];
+                            return (
+                                <div key={philKey} className="border-2 border-gray-300 rounded-lg p-6">
+                                    <div className="text-center mb-4">
+                                        <div className="text-5xl mb-3">{phil.image}</div>
+                                        <h3 className="text-xl font-bold">{phil.name}</h3>
+                                    </div>
+                                    <button
+                                        onClick={() => setSelectedPhil(philKey)}
+                                        className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                                    >
+                                        View Argument
+                                    </button>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    <button
+                        onClick={() => { onComplete(); onNext(); }}
+                        className="w-full px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                    >
+                        Continue to Synthesis →
+                    </button>
+                </div>
+            );
+        }
+
+        // SYNTHESIS SECTION
+        function SynthesisSection({ studentInfo, sessionData, onComplete }) {
+            const [reflections, setReflections] = useState({ patterns: '', osInsight: '', application: '' });
+            const [showCert, setShowCert] = useState(false);
+
+            const allComplete = Object.values(reflections).every(r => r.length >= 100);
+
+            const downloadCertificate = () => {
+                const cert = `Ethical Reasoning for the Information Age - Completion Certificate
+
+Student: ${studentInfo.name}
+Email: ${studentInfo.email}
+Course: ${studentInfo.course}
+Session: ${sessionData.sessionId}
+Completed: ${new Date().toLocaleString()}
+
+You've mastered argument analysis across ethical traditions.`;
+
+                const blob = new Blob([cert], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Toulmin_Certificate_${studentInfo.name.replace(/\s+/g, '_')}.txt`;
+                a.click();
+            };
+
+            if (showCert) {
+                return (
+                    <div className="bg-white rounded-lg shadow-lg p-8">
+                        <div className="text-center mb-8">
+                            <div className="text-6xl mb-4">🎓</div>
+                            <h2 className="text-4xl font-bold text-gray-900 mb-4">Complete!</h2>
+                        </div>
+                        <button
+                            onClick={downloadCertificate}
+                            className="w-full bg-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-purple-700"
+                        >
+                            📄 Download Certificate
+                        </button>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="bg-white rounded-lg shadow-lg p-8">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-4">Synthesis & Reflection</h2>
+                    
+                    <div className="space-y-6 mb-8">
+                        <div>
+                            <h4 className="font-bold mb-2">Patterns (100+ words)</h4>
+                            <textarea
+                                className="w-full px-4 py-3 border rounded-lg"
+                                rows="4"
+                                value={reflections.patterns}
+                                onChange={(e) => setReflections({...reflections, patterns: e.target.value})}
+                            />
+                        </div>
+
+                        <div>
+                            <h4 className="font-bold mb-2">OS1/OS2 Insight (100+ words)</h4>
+                            <textarea
+                                className="w-full px-4 py-3 border rounded-lg"
+                                rows="4"
+                                value={reflections.osInsight}
+                                onChange={(e) => setReflections({...reflections, osInsight: e.target.value})}
+                            />
+                        </div>
+
+                        <div>
+                            <h4 className="font-bold mb-2">Application (100+ words)</h4>
+                            <textarea
+                                className="w-full px-4 py-3 border rounded-lg"
+                                rows="4"
+                                value={reflections.application}
+                                onChange={(e) => setReflections({...reflections, application: e.target.value})}
+                            />
+                        </div>
+                    </div>
+
+                    {allComplete ? (
+                        <button
+                            onClick={() => { onComplete(); setShowCert(true); }}
+                            className="w-full px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                        >
+                            Complete & Generate Certificate →
+                        </button>
+                    ) : (
+                        <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4">
+                            <p className="text-sm">Complete all reflections (100+ words each)</p>
+                        </div>
+                    )}
+                </div>
+            );
+        }
 
         // Render
         const root = ReactDOM.createRoot(document.getElementById('root'));
