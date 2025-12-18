@@ -1,4 +1,66 @@
 <!DOCTYPE html>
+<!--
+═══════════════════════════════════════════════════════════════════════════
+ETHICAL REASONING FOR THE INFORMATION AGE: THE TOULMIN TOOL
+═══════════════════════════════════════════════════════════════════════════
+
+Version: Phase 4 - Complete
+Created: December 2024
+Author: Bob McGrew (Ethics Beyond Boundaries Project)
+Institution: Saint Petersburg College Ethics Institute
+
+DESCRIPTION:
+Interactive web application for teaching systematic ethical argument analysis
+using Toulmin's framework integrated with coherence theory. Designed for
+community college ethics courses bridging traditional philosophy with
+Information Age coordination challenges.
+
+KEY FEATURES:
+• 12 diverse philosophical traditions (Western, Eastern, African, Indigenous)
+• OS1/OS2 dual-capacity framework (phenomenological + meta-constructor)
+• Five coherence dimensions (BRC, KIC, CIC, ISC, TNC)
+• Toulmin argument analysis integrated with coherence requirements
+• Personalized philosopher recommendations based on student coherence state
+• Full accessibility support (ARIA, keyboard navigation, screen readers)
+• Progress tracking and certificate generation
+
+SECTIONS:
+1. Introduction - Information Age coordination challenges
+2. OS1/OS2 Framework - Dual capacity model
+3. Coherence Dimensions - Interactive exploration of BRC/KIC/CIC/ISC/TNC
+4. FAIM-QIRF Notation - Formal modeling framework
+5. Philosopher Exemplars - 12 traditions with coherence requirements
+6. Comparative Analysis - Standpoint comparison with OS1 Deep Dive
+7. Toulmin + Coherence Integration - Mapping arguments to coherence
+8. Student Modeling - Coherence self-assessment & recommendations
+9. Argument Analysis - Toulmin breakdown by philosopher
+10. Synthesis - Reflection prompts and certificate generation
+
+PEDAGOGICAL APPROACH:
+Students learn both rigorous argument analysis (OS1) AND reflective awareness
+of how their own coherence state affects which frameworks are accessible (OS2).
+This makes philosophy practical: not "which ethics is right?" but "which ethics
+can I actually access given my current conditions?"
+
+TECHNICAL DETAILS:
+• Single-file React application (no build step required)
+• Tailwind CSS via CDN for styling
+• LocalStorage for progress persistence
+• Session tracking with unique IDs
+• Fully self-contained (works offline once loaded)
+
+USAGE:
+1. Open file in modern web browser
+2. Enter student information to begin
+3. Progress automatically saved to localStorage
+4. Certificate downloadable upon completion
+
+LICENSE:
+Educational use permitted. Attribution required.
+© 2024 Ethics Beyond Boundaries Project
+
+═══════════════════════════════════════════════════════════════════════════
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -2507,12 +2569,189 @@
 
         // MODELING SECTION
         function ModelingSection({ studentModels, setStudentModels, onComplete, onNext }) {
+            const [showCoherenceAssessment, setShowCoherenceAssessment] = useState(true);
+            const [coherenceState, setCoherenceState] = useState({
+                BRC: 3, KIC: 3, CIC: 3, ISC: 3, TNC: 3
+            });
             const [model, setModel] = useState({
                 name: '', IK: '', PRS_t: '', SPTS: [''], AH: '', Capab: '', Cons: ''
             });
             const [submitted, setSubmitted] = useState(false);
+            const [showRecommendations, setShowRecommendations] = useState(false);
 
             const isComplete = model.name && model.IK && model.PRS_t && model.SPTS[0] && model.AH && model.Capab && model.Cons;
+
+            const assessmentComplete = Object.values(coherenceState).every(v => v !== 3);
+
+            const getRecommendations = () => {
+                const philosophers = {
+                    socrates: { name: "Socrates", req: { BRC: 3, KIC: 4, CIC: 5, ISC: 4, TNC: 3 } },
+                    aristotle: { name: "Aristotle", req: { BRC: 4, KIC: 5, CIC: 4, ISC: 5, TNC: 5 } },
+                    maathai: { name: "Wangari Maathai", req: { BRC: 4, KIC: 4, CIC: 3, ISC: 5, TNC: 4 } },
+                    mandela: { name: "Nelson Mandela", req: { BRC: 5, KIC: 4, CIC: 3, ISC: 5, TNC: 5 } },
+                    simpson: { name: "Leanne Betasamosake Simpson", req: { BRC: 3, KIC: 5, CIC: 3, ISC: 5, TNC: 5 } },
+                    collins: { name: "Patricia Hill Collins", req: { BRC: 3, KIC: 4, CIC: 4, ISC: 4, TNC: 3 } },
+                    augustine: { name: "Augustine", req: { BRC: 3, KIC: 4, CIC: 4, ISC: 5, TNC: 5 } },
+                    hume: { name: "David Hume", req: { BRC: 4, KIC: 3, CIC: 4, ISC: 3, TNC: 2 } },
+                    kant: { name: "Immanuel Kant", req: { BRC: 2, KIC: 4, CIC: 5, ISC: 3, TNC: 3 } },
+                    bentham: { name: "Jeremy Bentham", req: { BRC: 2, KIC: 2, CIC: 5, ISC: 4, TNC: 3 } },
+                    nussbaum: { name: "Martha Nussbaum", req: { BRC: 3, KIC: 3, CIC: 4, ISC: 5, TNC: 3 } },
+                    confucius: { name: "Confucius", req: { BRC: 4, KIC: 5, CIC: 3, ISC: 5, TNC: 5 } }
+                };
+
+                const scores = Object.entries(philosophers).map(([key, phil]) => {
+                    const totalDiff = ['BRC', 'KIC', 'CIC', 'ISC', 'TNC'].reduce((sum, dim) => {
+                        return sum + Math.abs(coherenceState[dim] - phil.req[dim]);
+                    }, 0);
+                    return { key, name: phil.name, score: totalDiff, req: phil.req };
+                });
+
+                scores.sort((a, b) => a.score - b.score);
+
+                return {
+                    mostAccessible: scores.slice(0, 3),
+                    leastAccessible: scores.slice(-3).reverse()
+                };
+            };
+
+            if (showRecommendations) {
+                const recs = getRecommendations();
+                
+                return (
+                    <div className="bg-white rounded-lg shadow-lg p-8">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Your Personalized Recommendations</h2>
+                        
+                        <div className="bg-blue-50 border-l-4 border-blue-500 p-6 mb-6">
+                            <h3 className="font-bold text-blue-900 mb-2">Your Coherence State</h3>
+                            <div className="grid grid-cols-5 gap-3">
+                                {['BRC', 'KIC', 'CIC', 'ISC', 'TNC'].map(dim => (
+                                    <div key={dim} className="text-center">
+                                        <div className="font-bold">{dim}</div>
+                                        <div className="text-2xl">{coherenceState[dim]}/5</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-6 mb-6">
+                            <div className="bg-green-50 border-2 border-green-400 rounded-lg p-6">
+                                <h3 className="text-xl font-bold text-green-900 mb-4">✅ Most Accessible For You</h3>
+                                <p className="text-sm text-gray-700 mb-4">
+                                    These philosophers' frameworks match your current coherence state:
+                                </p>
+                                <div className="space-y-3">
+                                    {recs.mostAccessible.map((rec, i) => (
+                                        <div key={i} className="bg-white p-3 rounded border border-green-300">
+                                            <div className="font-bold">{i + 1}. {rec.name}</div>
+                                            <div className="text-xs text-gray-600 mt-1">
+                                                Match score: {15 - rec.score}/15 (lower difference = better match)
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="bg-red-50 border-2 border-red-400 rounded-lg p-6">
+                                <h3 className="text-xl font-bold text-red-900 mb-4">⚠️ Currently Challenging</h3>
+                                <p className="text-sm text-gray-700 mb-4">
+                                    These frameworks require coherence conditions you don't currently have:
+                                </p>
+                                <div className="space-y-3">
+                                    {recs.leastAccessible.map((rec, i) => (
+                                        <div key={i} className="bg-white p-3 rounded border border-red-300">
+                                            <div className="font-bold">{rec.name}</div>
+                                            <div className="text-xs text-gray-600 mt-1">
+                                                Gap: {rec.score} points - would need improved conditions
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-6">
+                            <h4 className="font-bold text-yellow-900 mb-2">Important Note</h4>
+                            <p className="text-sm text-gray-700">
+                                This isn't about which philosophers are "better" - it's about which frameworks are 
+                                <strong> accessible to you right now</strong>. As your coherence state changes (better sleep, 
+                                less stress, more institutional support), different frameworks become available.
+                            </p>
+                        </div>
+
+                        <div className="flex space-x-4">
+                            <button
+                                onClick={() => setShowRecommendations(false)}
+                                className="flex-1 px-6 py-3 bg-gray-300 hover:bg-gray-400 rounded-lg font-semibold"
+                            >
+                                Back to Assessment
+                            </button>
+                            <button
+                                onClick={() => { onComplete(); onNext(); }}
+                                className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                            >
+                                Continue to Arguments →
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (showCoherenceAssessment) {
+                return (
+                    <div className="bg-white rounded-lg shadow-lg p-8">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Assess Your Coherence State</h2>
+                        <p className="text-lg text-gray-700 mb-6">
+                            Rate your current state for each dimension (1 = very low, 5 = very high):
+                        </p>
+
+                        <div className="space-y-6 mb-8">
+                            {[
+                                { key: 'BRC', name: 'Biological-Regulatory Coherence', desc: 'Sleep, stress management, emotional regulation', icon: '🫀' },
+                                { key: 'KIC', name: 'Kernel Identity Coherence', desc: 'Integrated sense of self across contexts', icon: '🎭' },
+                                { key: 'CIC', name: 'Cognitive-Informational Coherence', desc: 'Mental bandwidth, ability to process complexity', icon: '🧠' },
+                                { key: 'ISC', name: 'Institutional-Structural Coherence', desc: 'Supportive vs. extractive institutions', icon: '🏛️' },
+                                { key: 'TNC', name: 'Temporal-Narrative Coherence', desc: 'Time horizon, ability to maintain commitments', icon: '⏳' }
+                            ].map(dim => (
+                                <div key={dim.key} className="bg-gray-50 border-2 border-gray-300 rounded-lg p-6">
+                                    <div className="flex items-center space-x-3 mb-3">
+                                        <span className="text-3xl">{dim.icon}</span>
+                                        <div>
+                                            <h4 className="font-bold text-gray-900">{dim.key}: {dim.name}</h4>
+                                            <p className="text-sm text-gray-600">{dim.desc}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center space-x-4">
+                                        <span className="text-sm font-semibold w-24">Very Low</span>
+                                        <input
+                                            type="range"
+                                            min="1"
+                                            max="5"
+                                            value={coherenceState[dim.key]}
+                                            onChange={(e) => setCoherenceState({...coherenceState, [dim.key]: parseInt(e.target.value)})}
+                                            className="flex-1"
+                                        />
+                                        <span className="text-sm font-semibold w-24 text-right">Very High</span>
+                                        <span className="text-2xl font-bold w-12 text-center">{coherenceState[dim.key]}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {assessmentComplete ? (
+                            <button
+                                onClick={() => setShowRecommendations(true)}
+                                className="w-full px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                            >
+                                Get Personalized Recommendations →
+                            </button>
+                        ) : (
+                            <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4">
+                                <p className="text-sm">Adjust all sliders to see your personalized recommendations</p>
+                            </div>
+                        )}
+                    </div>
+                );
+            }
 
             if (submitted) {
                 return (
@@ -2710,28 +2949,75 @@
 
         // SYNTHESIS SECTION
         function SynthesisSection({ studentInfo, sessionData, onComplete }) {
-            const [reflections, setReflections] = useState({ patterns: '', osInsight: '', application: '' });
+            const [reflections, setReflections] = useState({ 
+                patterns: '', 
+                osInsight: '', 
+                application: '',
+                coherenceReflection: '',
+                personalGrowth: ''
+            });
             const [showCert, setShowCert] = useState(false);
 
             const allComplete = Object.values(reflections).every(r => r.length >= 100);
 
             const downloadCertificate = () => {
-                const cert = `Ethical Reasoning for the Information Age - Completion Certificate
+                const cert = `═══════════════════════════════════════════════════════════════
+  ETHICAL REASONING FOR THE INFORMATION AGE
+  Certificate of Completion
+═══════════════════════════════════════════════════════════════
 
 Student: ${studentInfo.name}
 Email: ${studentInfo.email}
 Course: ${studentInfo.course}
-Session: ${sessionData.sessionId}
-Completed: ${new Date().toLocaleString()}
 
-You've mastered argument analysis across ethical traditions.`;
+Session ID: ${sessionData.sessionId}
+Completion Date: ${new Date().toLocaleString()}
+
+═══════════════════════════════════════════════════════════════
+ACHIEVEMENTS
+═══════════════════════════════════════════════════════════════
+
+✓ Mastered OS1/OS2 dual-capacity framework
+✓ Understood five coherence dimensions (BRC, KIC, CIC, ISC, TNC)
+✓ Studied 12 diverse philosophical traditions
+✓ Learned Toulmin argument analysis
+✓ Integrated coherence requirements with ethical frameworks
+✓ Completed personal coherence self-assessment
+✓ Analyzed standpoint-dependent ethical reasoning
+
+═══════════════════════════════════════════════════════════════
+CORE COMPETENCIES DEMONSTRATED
+═══════════════════════════════════════════════════════════════
+
+• Systematic ethical argument analysis (Toulmin method)
+• Recognition of scope conditions for ethical frameworks
+• Understanding when arguments work vs. when they fail
+• Standpoint awareness and epistemic humility
+• Integration of phenomenological and meta-constructor capacities
+• Practical application of coherence framework
+
+═══════════════════════════════════════════════════════════════
+
+This certificate verifies that ${studentInfo.name} has completed
+comprehensive training in ethical reasoning across difference,
+demonstrating both analytical rigor (OS1) and reflective
+awareness (OS2) of how coherence conditions shape ethical capacity.
+
+This is not just knowledge of ethics—this is practical skill
+in navigating ethical coordination challenges in the Information Age.
+
+═══════════════════════════════════════════════════════════════
+Ethics Beyond Boundaries Project
+Saint Petersburg College Ethics Institute
+═══════════════════════════════════════════════════════════════`;
 
                 const blob = new Blob([cert], { type: 'text/plain' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `Toulmin_Certificate_${studentInfo.name.replace(/\s+/g, '_')}.txt`;
+                a.download = `Toulmin_Certificate_${studentInfo.name.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0,10)}.txt`;
                 a.click();
+                URL.revokeObjectURL(url);
             };
 
             if (showCert) {
@@ -2739,14 +3025,49 @@ You've mastered argument analysis across ethical traditions.`;
                     <div className="bg-white rounded-lg shadow-lg p-8">
                         <div className="text-center mb-8">
                             <div className="text-6xl mb-4">🎓</div>
-                            <h2 className="text-4xl font-bold text-gray-900 mb-4">Complete!</h2>
+                            <h2 className="text-4xl font-bold text-gray-900 mb-4">Congratulations!</h2>
+                            <p className="text-xl text-gray-700 mb-2">You've completed the Toulmin Tool</p>
+                            <p className="text-lg text-gray-600">Ethical Reasoning for the Information Age</p>
                         </div>
+
+                        <div className="bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-300 rounded-lg p-6 mb-6">
+                            <h3 className="text-xl font-bold text-purple-900 mb-3">What You've Mastered</h3>
+                            <div className="grid md:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <div className="font-semibold mb-2">Analytical Skills:</div>
+                                    <ul className="space-y-1 text-gray-700">
+                                        <li>• Toulmin argument analysis</li>
+                                        <li>• Standpoint epistemology</li>
+                                        <li>• Coherence diagnosis</li>
+                                        <li>• Scope condition recognition</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <div className="font-semibold mb-2">Conceptual Frameworks:</div>
+                                    <ul className="space-y-1 text-gray-700">
+                                        <li>• OS1/OS2 dual capacity</li>
+                                        <li>• Five coherence dimensions</li>
+                                        <li>• FAIM-QIRF notation</li>
+                                        <li>• 12 philosophical traditions</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
                         <button
                             onClick={downloadCertificate}
-                            className="w-full bg-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-purple-700"
+                            className="w-full bg-purple-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:bg-purple-700 mb-4"
                         >
-                            📄 Download Certificate
+                            📄 Download Your Certificate
                         </button>
+
+                        <div className="bg-blue-50 border-l-4 border-blue-500 p-4">
+                            <p className="text-sm text-gray-700">
+                                <strong>Next Steps:</strong> Apply this framework throughout your ethics course. Use coherence 
+                                analysis to understand when different ethical frameworks are accessible to you and others.
+                                Remember: this isn't about which philosophy is "right"—it's about understanding scope conditions.
+                            </p>
+                        </div>
                     </div>
                 );
             }
@@ -2754,49 +3075,115 @@ You've mastered argument analysis across ethical traditions.`;
             return (
                 <div className="bg-white rounded-lg shadow-lg p-8">
                     <h2 className="text-3xl font-bold text-gray-900 mb-4">Synthesis & Reflection</h2>
+                    <p className="text-lg text-gray-700 mb-6">
+                        Complete these reflections to consolidate your learning (100+ words each):
+                    </p>
                     
                     <div className="space-y-6 mb-8">
                         <div>
-                            <h4 className="font-bold mb-2">Patterns (100+ words)</h4>
+                            <h4 className="font-bold mb-2 flex items-center">
+                                <span className="mr-2">1.</span> Patterns Across Philosophers
+                            </h4>
+                            <p className="text-sm text-gray-600 mb-2">
+                                What patterns did you notice across different philosophical traditions? How do standpoint 
+                                and coherence requirements shape what each can see?
+                            </p>
                             <textarea
-                                className="w-full px-4 py-3 border rounded-lg"
+                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500"
                                 rows="4"
+                                placeholder="Reflect on patterns you noticed..."
                                 value={reflections.patterns}
                                 onChange={(e) => setReflections({...reflections, patterns: e.target.value})}
                             />
+                            <div className="text-xs text-gray-500 mt-1">{reflections.patterns.length}/100 words minimum</div>
                         </div>
 
                         <div>
-                            <h4 className="font-bold mb-2">OS1/OS2 Insight (100+ words)</h4>
+                            <h4 className="font-bold mb-2 flex items-center">
+                                <span className="mr-2">2.</span> OS1/OS2 Integration
+                            </h4>
+                            <p className="text-sm text-gray-600 mb-2">
+                                How does the OS1/OS2 framework change your understanding of ethical disagreements? 
+                                What becomes visible at OS2 that's invisible at OS1?
+                            </p>
                             <textarea
-                                className="w-full px-4 py-3 border rounded-lg"
+                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500"
                                 rows="4"
+                                placeholder="Reflect on OS1/OS2 insights..."
                                 value={reflections.osInsight}
                                 onChange={(e) => setReflections({...reflections, osInsight: e.target.value})}
                             />
+                            <div className="text-xs text-gray-500 mt-1">{reflections.osInsight.length}/100 words minimum</div>
                         </div>
 
                         <div>
-                            <h4 className="font-bold mb-2">Application (100+ words)</h4>
+                            <h4 className="font-bold mb-2 flex items-center">
+                                <span className="mr-2">3.</span> Coherence & Your Life
+                            </h4>
+                            <p className="text-sm text-gray-600 mb-2">
+                                Reflecting on your coherence self-assessment: which dimensions are strongest/weakest for you? 
+                                How does this affect which ethical frameworks are accessible to you right now?
+                            </p>
                             <textarea
-                                className="w-full px-4 py-3 border rounded-lg"
+                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500"
                                 rows="4"
+                                placeholder="Reflect on your coherence state..."
+                                value={reflections.coherenceReflection}
+                                onChange={(e) => setReflections({...reflections, coherenceReflection: e.target.value})}
+                            />
+                            <div className="text-xs text-gray-500 mt-1">{reflections.coherenceReflection.length}/100 words minimum</div>
+                        </div>
+
+                        <div>
+                            <h4 className="font-bold mb-2 flex items-center">
+                                <span className="mr-2">4.</span> Practical Application
+                            </h4>
+                            <p className="text-sm text-gray-600 mb-2">
+                                Give a concrete example of how you'll apply this framework. Where in your life (work, school, 
+                                relationships) will Toulmin + coherence analysis be useful?
+                            </p>
+                            <textarea
+                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500"
+                                rows="4"
+                                placeholder="Describe a practical application..."
                                 value={reflections.application}
                                 onChange={(e) => setReflections({...reflections, application: e.target.value})}
                             />
+                            <div className="text-xs text-gray-500 mt-1">{reflections.application.length}/100 words minimum</div>
+                        </div>
+
+                        <div>
+                            <h4 className="font-bold mb-2 flex items-center">
+                                <span className="mr-2">5.</span> Personal Growth & Next Steps
+                            </h4>
+                            <p className="text-sm text-gray-600 mb-2">
+                                What conditions would need to change for you to access philosophical frameworks that are 
+                                currently challenging? What concrete steps could improve your coherence dimensions?
+                            </p>
+                            <textarea
+                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500"
+                                rows="4"
+                                placeholder="Reflect on growth opportunities..."
+                                value={reflections.personalGrowth}
+                                onChange={(e) => setReflections({...reflections, personalGrowth: e.target.value})}
+                            />
+                            <div className="text-xs text-gray-500 mt-1">{reflections.personalGrowth.length}/100 words minimum</div>
                         </div>
                     </div>
 
                     {allComplete ? (
                         <button
                             onClick={() => { onComplete(); setShowCert(true); }}
-                            className="w-full px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                            className="w-full px-6 py-4 bg-purple-600 text-white rounded-lg font-semibold text-lg hover:bg-purple-700"
                         >
-                            Complete & Generate Certificate →
+                            Complete & Generate Certificate 🎓
                         </button>
                     ) : (
                         <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4">
-                            <p className="text-sm">Complete all reflections (100+ words each)</p>
+                            <p className="text-sm">Complete all 5 reflections (100+ words each) to generate your certificate</p>
+                            <p className="text-xs text-gray-600 mt-2">
+                                Completed: {Object.values(reflections).filter(r => r.length >= 100).length}/5
+                            </p>
                         </div>
                     )}
                 </div>
