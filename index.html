@@ -911,7 +911,7 @@
                 setSessionData(session);
                 setHasStarted(true);
                 
-                const sections = ['intro', 'os1os2', 'notation', 'exemplars', 'comparison', 'modeling', 'argumentAnalysis', 'synthesis'];
+                const sections = ['intro', 'os1os2', 'coherence', 'notation', 'exemplars', 'comparison', 'modeling', 'argumentAnalysis', 'synthesis'];
                 const initialProgress = {};
                 sections.forEach(section => {
                     initialProgress[section] = {
@@ -992,6 +992,7 @@
             const sections = [
                 { id: 'intro', label: 'Introduction', icon: '🎯' },
                 { id: 'os1os2', label: 'OS1/OS2 Framework', icon: '🧠' },
+                { id: 'coherence', label: 'Coherence Dimensions', icon: '🔗' },
                 { id: 'notation', label: 'FAIM-QIRF Notation', icon: '📐' },
                 { id: 'exemplars', label: 'Philosopher Exemplars', icon: '🌍' },
                 { id: 'comparison', label: 'Comparative Analysis', icon: '⚖️' },
@@ -1053,7 +1054,10 @@
                                 <IntroSection onComplete={() => completeSection('intro')} onNext={() => navigateToSection('os1os2')} />
                             )}
                             {currentSection === 'os1os2' && (
-                                <OS1OS2Section onComplete={() => completeSection('os1os2')} onNext={() => navigateToSection('notation')} />
+                                <OS1OS2Section onComplete={() => completeSection('os1os2')} onNext={() => navigateToSection('coherence')} />
+                            )}
+                            {currentSection === 'coherence' && (
+                                <CoherenceSection onComplete={() => completeSection('coherence')} onNext={() => navigateToSection('notation')} />
                             )}
                             {currentSection === 'notation' && (
                                 <NotationSection onComplete={() => completeSection('notation')} onNext={() => navigateToSection('exemplars')} />
@@ -1269,6 +1273,209 @@
                     >
                         Continue to OS1/OS2 Framework →
                     </button>
+                </div>
+            );
+        }
+
+        // COHERENCE SECTION - NEW FOR PHASE 2
+        function CoherenceSection({ onComplete, onNext }) {
+            const [expandedDimension, setExpandedDimension] = useState(null);
+            const [exploredDimensions, setExploredDimensions] = useState(new Set());
+
+            const dimensions = [
+                {
+                    id: 'BRC',
+                    name: 'Biological-Regulatory Coherence',
+                    color: 'orange',
+                    icon: '🫀',
+                    shortDesc: 'Emotional regulation and stress management',
+                    fullDesc: 'Your capacity to regulate emotions, manage stress, and maintain physiological stability. When overwhelmed, your prefrontal cortex literally can\'t do complex ethical reasoning.',
+                    examples: [
+                        'Sleep deprivation makes moral judgment deteriorate',
+                        'Chronic stress narrows attention and reduces nuance',
+                        'Panic states prevent deliberative thinking',
+                        'Hunger and physical pain compromise decision-making'
+                    ],
+                    breakdown: 'When BRC breaks: panic, rigidity, emotional flooding, fight-flight-freeze responses dominate',
+                    philosopherNote: 'Aristotle: doctrine of the mean. Emotions must be educated and regulated for virtue to function.'
+                },
+                {
+                    id: 'KIC',
+                    name: 'Kernel Identity Coherence',
+                    color: 'blue',
+                    icon: '🎭',
+                    shortDesc: 'Integrated sense of self across contexts',
+                    fullDesc: 'Your ability to maintain a coherent identity across different roles and contexts. Fragmentation means being different people in different places, unable to develop settled character.',
+                    examples: [
+                        'Being authentic at work vs. compartmentalized',
+                        'Values consistent across relationships',
+                        'Not requiring different masks in different spaces',
+                        'Settled character that persists across time'
+                    ],
+                    breakdown: 'When KIC breaks: compartmentalization, "different person at work/home," moral distress from value conflicts',
+                    philosopherNote: 'Aristotle: virtue as settled disposition. Confucius: relational roles integrate into coherent self.'
+                },
+                {
+                    id: 'CIC',
+                    name: 'Cognitive-Informational Coherence',
+                    color: 'yellow',
+                    icon: '🧠',
+                    shortDesc: 'Capacity for complex reasoning',
+                    fullDesc: 'Your ability to process complex information, hold multiple perspectives, avoid contradictions, and exercise practical judgment. Overload means black-and-white thinking.',
+                    examples: [
+                        'Working memory under cognitive load',
+                        'Ability to see nuance vs. binary thinking',
+                        'Holding multiple considerations simultaneously',
+                        'Pattern recognition and practical wisdom'
+                    ],
+                    breakdown: 'When CIC breaks: binary thinking, can\'t process complexity, contradictions proliferate',
+                    philosopherNote: 'Kant: requires full rational capacity. Aristotle: phronesis needs cognitive bandwidth for context-sensitive judgment.'
+                },
+                {
+                    id: 'ISC',
+                    name: 'Institutional-Structural Coherence',
+                    color: 'green',
+                    icon: '🏛️',
+                    shortDesc: 'Institutions that support vs. punish ethics',
+                    fullDesc: 'Whether the institutions you\'re embedded in support ethical action or punish it. Bad structures create double-binds where all choices feel wrong.',
+                    examples: [
+                        'Workplace that rewards integrity vs. exploitation',
+                        'Healthcare system that allows proper care',
+                        'Educational structures supporting learning',
+                        'Communities that enable virtue development'
+                    ],
+                    breakdown: 'When ISC breaks: moral double-binds, "damned if you do, damned if you don\'t," institutional betrayal',
+                    philosopherNote: 'Aristotle: requires the polis. Maathai: institutional structures determine whose knowledge counts.'
+                },
+                {
+                    id: 'TNC',
+                    name: 'Temporal-Narrative Coherence',
+                    color: 'purple',
+                    icon: '⏳',
+                    shortDesc: 'Connection across time and commitment',
+                    fullDesc: 'Your ability to connect past, present, and future into a coherent narrative and maintain long-term commitments. Short-termism means ethical frameworks requiring patience become inaccessible.',
+                    examples: [
+                        'Seeing life as whole trajectory vs. isolated moments',
+                        'Maintaining commitments across years',
+                        'Learning from past and planning for future',
+                        'Addiction collapses time horizon to "now"'
+                    ],
+                    breakdown: 'When TNC breaks: short-termism, "only today matters," inability to develop character over time',
+                    philosopherNote: 'Aristotle: requires complete life perspective. Virtue develops across decades, not moments.'
+                }
+            ];
+
+            const allExplored = dimensions.every(d => exploredDimensions.has(d.id));
+
+            return (
+                <div className="bg-white rounded-lg shadow-lg p-8">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                        The Five Coherence Dimensions
+                    </h2>
+                    
+                    <p className="text-xl text-gray-700 mb-6">
+                        Ethics isn't just about knowing right from wrong—it requires five distinct capacities working together. 
+                        When any of these break down, ethical reasoning becomes difficult or impossible.
+                    </p>
+
+                    <div className="bg-blue-50 border-l-4 border-blue-500 p-6 mb-6">
+                        <h3 className="font-bold text-blue-900 mb-2">Key Insight</h3>
+                        <p className="text-gray-700">
+                            Different ethical frameworks require different coherence conditions. Understanding these helps you see:
+                        </p>
+                        <ul className="mt-2 space-y-1 text-gray-700">
+                            <li>• When an ethical framework will work for YOU</li>
+                            <li>• What conditions need protection to maintain ethical capacity</li>
+                            <li>• Why philosophers disagree (they're tracking different breakdowns)</li>
+                        </ul>
+                    </div>
+
+                    <div className="bg-gray-100 border-2 border-gray-400 rounded-lg p-4 mb-6">
+                        <p className="text-sm font-semibold text-gray-700">
+                            Progress: {exploredDimensions.size} of {dimensions.length} dimensions explored
+                            {allExplored && " ✓ All explored!"}
+                        </p>
+                    </div>
+
+                    <div className="space-y-4 mb-8">
+                        {dimensions.map(dimension => {
+                            const isExpanded = expandedDimension === dimension.id;
+                            const isExplored = exploredDimensions.has(dimension.id);
+                            const colorClasses = {
+                                orange: 'bg-orange-50 border-orange-300 text-orange-900',
+                                blue: 'bg-blue-50 border-blue-300 text-blue-900',
+                                yellow: 'bg-yellow-50 border-yellow-300 text-yellow-900',
+                                green: 'bg-green-50 border-green-300 text-green-900',
+                                purple: 'bg-purple-50 border-purple-300 text-purple-900'
+                            };
+
+                            return (
+                                <div key={dimension.id} className={`border-2 rounded-lg overflow-hidden ${isExplored ? 'border-green-400' : ''}`}>
+                                    <button
+                                        onClick={() => {
+                                            setExpandedDimension(isExpanded ? null : dimension.id);
+                                            setExploredDimensions(new Set([...exploredDimensions, dimension.id]));
+                                        }}
+                                        className={`w-full text-left p-6 ${colorClasses[dimension.color]} hover:opacity-90 transition-all`}
+                                    >
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex items-center space-x-4">
+                                                <span className="text-4xl" aria-hidden="true">{dimension.icon}</span>
+                                                <div>
+                                                    <h3 className="text-xl font-bold">{dimension.id}: {dimension.name}</h3>
+                                                    <p className="text-sm mt-1">{dimension.shortDesc}</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center space-x-3">
+                                                {isExplored && <span className="text-green-600 font-bold">✓</span>}
+                                                <span className="text-2xl">{isExpanded ? '▼' : '▶'}</span>
+                                            </div>
+                                        </div>
+                                    </button>
+
+                                    {isExpanded && (
+                                        <div className="p-6 bg-white border-t-2">
+                                            <p className="text-gray-700 mb-4 font-semibold">{dimension.fullDesc}</p>
+                                            
+                                            <div className="mb-4">
+                                                <h4 className="font-bold text-gray-900 mb-2">Examples:</h4>
+                                                <ul className="space-y-1 text-gray-700">
+                                                    {dimension.examples.map((ex, i) => (
+                                                        <li key={i}>• {ex}</li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+
+                                            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+                                                <h4 className="font-bold text-red-900 mb-1">When It Breaks Down:</h4>
+                                                <p className="text-sm text-gray-700">{dimension.breakdown}</p>
+                                            </div>
+
+                                            <div className="bg-indigo-50 border-l-4 border-indigo-500 p-4">
+                                                <h4 className="font-bold text-indigo-900 mb-1">Philosopher Connection:</h4>
+                                                <p className="text-sm text-gray-700">{dimension.philosopherNote}</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {allExplored ? (
+                        <button
+                            onClick={() => { onComplete(); onNext(); }}
+                            className="w-full px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                        >
+                            Continue to FAIM-QIRF Notation →
+                        </button>
+                    ) : (
+                        <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4">
+                            <p className="text-sm text-gray-700">
+                                Explore all {dimensions.length} dimensions to continue. Click each one to expand and learn more.
+                            </p>
+                        </div>
+                    )}
                 </div>
             );
         }
