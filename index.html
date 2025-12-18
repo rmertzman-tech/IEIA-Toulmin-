@@ -80,6 +80,11 @@ Educational use permitted. Attribution required.
             to { opacity: 1; transform: translateY(0); }
         }
         
+        /* Prevent textarea resizing to avoid page jumps */
+        textarea {
+            resize: none;
+        }
+        
         /* Accessibility: Focus visible */
         *:focus {
             outline: 3px solid #fbbf24;
@@ -2293,7 +2298,7 @@ Educational use permitted. Attribution required.
             );
         }
 
- // META CASE STUDY SECTION - COHERENCE EXTRACTION AT SCALE
+        // META CASE STUDY SECTION - COHERENCE EXTRACTION AT SCALE
         function MetaCaseSection({ onComplete, onNext }) {
             const [currentPhase, setCurrentPhase] = useState(0);
             const [dimensionAnalysis, setDimensionAnalysis] = useState({});
@@ -2304,11 +2309,7 @@ Educational use permitted. Attribution required.
                 backing: '',
                 rebuttals: []
             });
-            // FIX: Initialize with default values of 3 to match the visual sliders
-            // This prevents navigation lock if user accepts the default "3" rating
-            const [personalAssessment, setPersonalAssessment] = useState({
-                BRC: 3, KIC: 3, CIC: 3, ISC: 3, TNC: 3
-            });
+            const [personalAssessment, setPersonalAssessment] = useState({});
             const [showBiologicalAnalogue, setShowBiologicalAnalogue] = useState(false);
 
             const phases = [
@@ -2350,9 +2351,15 @@ Educational use permitted. Attribution required.
 
             const canProgressPhase = () => {
                 const phase = phases[currentPhase];
+                console.log('[META CASE] Checking progress for phase:', currentPhase, phase.title);
+                console.log('[META CASE] Current dimensionAnalysis:', dimensionAnalysis);
+                
                 if (typeof phase.canProgress === 'function') {
-                    return phase.canProgress();
+                    const result = phase.canProgress();
+                    console.log('[META CASE] Progress check result:', result);
+                    return result;
                 }
+                console.log('[META CASE] Progress check (boolean):', phase.canProgress);
                 return phase.canProgress;
             };
 
@@ -2503,6 +2510,27 @@ Educational use permitted. Attribution required.
                                 <p className="text-xs text-gray-600 mt-1">
                                     {['BRC', 'KIC', 'CIC', 'ISC', 'TNC'].filter(dim => dimensionAnalysis[dim] !== undefined).length} of 5 dimensions analyzed
                                 </p>
+                                
+                                {/* DEBUG INFO */}
+                                <details className="mt-3 text-xs">
+                                    <summary className="cursor-pointer text-blue-600">🐛 Debug Info (click to expand)</summary>
+                                    <div className="mt-2 bg-gray-100 p-2 rounded font-mono">
+                                        <p>Current state:</p>
+                                        <pre className="whitespace-pre-wrap">{JSON.stringify(dimensionAnalysis, null, 2)}</pre>
+                                        <p className="mt-2">Progress check:</p>
+                                        <ul>
+                                            {['BRC', 'KIC', 'CIC', 'ISC', 'TNC'].map(dim => (
+                                                <li key={dim}>
+                                                    {dim}: {dimensionAnalysis[dim] !== undefined ? '✓' : '✗'} 
+                                                    (value: {JSON.stringify(dimensionAnalysis[dim])})
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        <p className="mt-2 font-bold">
+                                            Can progress: {['BRC', 'KIC', 'CIC', 'ISC', 'TNC'].every(dim => dimensionAnalysis[dim] !== undefined) ? 'YES ✓' : 'NO ✗'}
+                                        </p>
+                                    </div>
+                                </details>
                             </div>
                         </div>
 
@@ -2561,13 +2589,25 @@ Educational use permitted. Attribution required.
 
                                             <div className="flex space-x-4">
                                                 <button
-                                                    onClick={() => setDimensionAnalysis({...dimensionAnalysis, [dimension.id]: true})}
+                                                    onClick={() => {
+                                                        console.log('[META CASE] Before update - dimensionAnalysis:', dimensionAnalysis);
+                                                        const newState = {...dimensionAnalysis, [dimension.id]: true};
+                                                        console.log('[META CASE] Setting', dimension.id, 'to true');
+                                                        console.log('[META CASE] New state will be:', newState);
+                                                        setDimensionAnalysis(newState);
+                                                    }}
                                                     className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700"
                                                 >
                                                     Mark as Compromised
                                                 </button>
                                                 <button
-                                                    onClick={() => setDimensionAnalysis({...dimensionAnalysis, [dimension.id]: false})}
+                                                    onClick={() => {
+                                                        console.log('[META CASE] Before update - dimensionAnalysis:', dimensionAnalysis);
+                                                        const newState = {...dimensionAnalysis, [dimension.id]: false};
+                                                        console.log('[META CASE] Setting', dimension.id, 'to false');
+                                                        console.log('[META CASE] New state will be:', newState);
+                                                        setDimensionAnalysis(newState);
+                                                    }}
                                                     className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700"
                                                 >
                                                     Mark as Intact
@@ -2605,37 +2645,49 @@ Educational use permitted. Attribution required.
             };
 
             // PHASE 2: TOULMIN CONSTRUCTION
-            const ToulminPhase = () => (
-                <div className="space-y-6">
-                    <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-6">
-                        <h3 className="text-xl font-bold text-blue-900 mb-3">Build Meta's Implicit Ethical Argument</h3>
-                        <p className="text-gray-700 mb-3">
-                            Meta never explicitly stated: "It's ethical to extract users' coherence for profit." 
-                            But their actions implied an argument. Let's reconstruct it using Toulmin's framework.
-                        </p>
-                        <p className="text-sm text-gray-600">
-                            Think about what Meta would need to claim, and what grounds/warrants would support that claim.
-                        </p>
-                    </div>
-
-                    <div className="space-y-4">
-                        <div className="bg-white border-2 border-blue-300 rounded-lg p-6">
-                            <h4 className="font-bold text-blue-900 mb-3">📍 CLAIM: What is Meta's implicit ethical claim?</h4>
-                            <p className="text-sm text-gray-600 mb-3">
-                                Example: "It's ethically permissible to maximize engagement even when it harms users' 
-                                psychological well-being"
+            const ToulminPhase = () => {
+                const showAdditionalFields = toulminConstruction.claim.length > 20;
+                
+                return (
+                    <div className="space-y-6">
+                        <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-6">
+                            <h3 className="text-xl font-bold text-blue-900 mb-3">Build Meta's Implicit Ethical Argument</h3>
+                            <p className="text-gray-700 mb-3">
+                                Meta never explicitly stated: "It's ethical to extract users' coherence for profit." 
+                                But their actions implied an argument. Let's reconstruct it using Toulmin's framework.
                             </p>
-                            <textarea
-                                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                rows="3"
-                                placeholder="Write Meta's implicit ethical claim here..."
-                                value={toulminConstruction.claim}
-                                onChange={(e) => setToulminConstruction({...toulminConstruction, claim: e.target.value})}
-                            />
+                            <p className="text-sm text-gray-600">
+                                Think about what Meta would need to claim, and what grounds/warrants would support that claim.
+                            </p>
                         </div>
 
-                        {toulminConstruction.claim.length > 20 && (
-                            <>
+                        <div className="space-y-4">
+                            <div className="bg-white border-2 border-blue-300 rounded-lg p-6">
+                                <h4 className="font-bold text-blue-900 mb-3">📍 CLAIM: What is Meta's implicit ethical claim?</h4>
+                                <p className="text-sm text-gray-600 mb-3">
+                                    Example: "It's ethically permissible to maximize engagement even when it harms users' 
+                                    psychological well-being"
+                                </p>
+                                <textarea
+                                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 resize-none"
+                                    rows="3"
+                                    placeholder="Write Meta's implicit ethical claim here..."
+                                    value={toulminConstruction.claim}
+                                    onChange={(e) => setToulminConstruction({...toulminConstruction, claim: e.target.value})}
+                                />
+                                {!showAdditionalFields && (
+                                    <p className="text-xs text-gray-500 mt-2">
+                                        Write at least 20 characters to unlock the next sections
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Always render but control visibility with opacity and pointer-events */}
+                            <div style={{ 
+                                opacity: showAdditionalFields ? 1 : 0.3,
+                                pointerEvents: showAdditionalFields ? 'auto' : 'none',
+                                transition: 'opacity 0.3s ease'
+                            }}>
                                 <div className="bg-white border-2 border-green-300 rounded-lg p-6">
                                     <h4 className="font-bold text-green-900 mb-3">🔍 GROUNDS: What evidence supports this claim?</h4>
                                     <p className="text-sm text-gray-600 mb-3">
@@ -2666,13 +2718,13 @@ Educational use permitted. Attribution required.
                                     ))}
                                 </div>
 
-                                <div className="bg-white border-2 border-purple-300 rounded-lg p-6">
+                                <div className="bg-white border-2 border-purple-300 rounded-lg p-6 mt-4">
                                     <h4 className="font-bold text-purple-900 mb-3">🔗 WARRANT: What connects grounds to claim?</h4>
                                     <p className="text-sm text-gray-600 mb-3">
                                         What principle or reasoning links the evidence to the conclusion?
                                     </p>
                                     <textarea
-                                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 resize-none"
                                         rows="3"
                                         placeholder="Example: 'If users voluntarily choose to use a platform, then the platform bears no responsibility for harms...'"
                                         value={toulminConstruction.warrant}
@@ -2680,7 +2732,7 @@ Educational use permitted. Attribution required.
                                     />
                                 </div>
 
-                                <div className="bg-red-50 border-2 border-red-300 rounded-lg p-6">
+                                <div className="bg-red-50 border-2 border-red-300 rounded-lg p-6 mt-4">
                                     <h4 className="font-bold text-red-900 mb-3">🚫 REBUTTALS: Where does this argument fail?</h4>
                                     <p className="text-sm text-gray-600 mb-3">
                                         Using coherence analysis, identify the weaknesses:
@@ -2709,11 +2761,11 @@ Educational use permitted. Attribution required.
                                         </label>
                                     ))}
                                 </div>
-                            </>
-                        )}
+                            </div>
+                        </div>
                     </div>
-                </div>
-            );
+                );
+            };
 
             // PHASE 3: PERSONAL APPLICATION
             const PersonalApplicationPhase = () => {
@@ -2804,7 +2856,7 @@ Educational use permitted. Attribution required.
                         {(() => {
                             const dimensions = ['BRC', 'CIC', 'KIC', 'TNC', 'ISC'];
                             const allRated = personalAssessment.platform && 
-                                             dimensions.every(dim => personalAssessment[dim] !== undefined);
+                                           dimensions.every(dim => personalAssessment[dim] !== undefined);
                             
                             if (allRated) {
                                 const avgScore = dimensions.reduce((sum, dim) => sum + personalAssessment[dim], 0) / 5;
@@ -3015,7 +3067,12 @@ Educational use permitted. Attribution required.
                             {currentPhase < phases.length - 1 ? (
                                 <>
                                     <button
-                                        onClick={() => setCurrentPhase(currentPhase + 1)}
+                                        onClick={() => {
+                                            console.log('[META CASE] Next button clicked, canProgress:', canProgressPhase());
+                                            if (canProgressPhase()) {
+                                                setCurrentPhase(currentPhase + 1);
+                                            }
+                                        }}
                                         disabled={!canProgressPhase()}
                                         className={`px-6 py-3 rounded-lg font-semibold ${
                                             canProgressPhase()
@@ -3032,6 +3089,15 @@ Educational use permitted. Attribution required.
                                             {currentPhase === 3 && 'Select platform and rate all 5 dimensions to continue'}
                                         </p>
                                     )}
+                                    {/* DEBUG: Show actual progress state */}
+                                    <details className="text-xs mt-1">
+                                        <summary className="cursor-pointer text-blue-600">🐛 Debug Next Button</summary>
+                                        <div className="bg-gray-100 p-2 rounded mt-1 font-mono text-left">
+                                            <p>Phase: {currentPhase} ({phases[currentPhase].title})</p>
+                                            <p>canProgressPhase(): {canProgressPhase() ? 'true ✓' : 'false ✗'}</p>
+                                            <p>Button disabled: {!canProgressPhase() ? 'YES' : 'NO'}</p>
+                                        </div>
+                                    </details>
                                 </>
                             ) : (
                                 <button
@@ -3557,14 +3623,14 @@ Educational use permitted. Attribution required.
                         />
                         <textarea
                             placeholder="IK: Core commitments *"
-                            className="w-full px-4 py-2 border rounded-lg"
+                            className="w-full px-4 py-2 border rounded-lg resize-none"
                             rows="2"
                             value={model.IK}
                             onChange={(e) => setModel({...model, IK: e.target.value})}
                         />
                         <textarea
                             placeholder="PRS_t: What's visible to them *"
-                            className="w-full px-4 py-2 border rounded-lg"
+                            className="w-full px-4 py-2 border rounded-lg resize-none"
                             rows="2"
                             value={model.PRS_t}
                             onChange={(e) => setModel({...model, PRS_t: e.target.value})}
@@ -3578,21 +3644,21 @@ Educational use permitted. Attribution required.
                         />
                         <textarea
                             placeholder="AH: Assembly history *"
-                            className="w-full px-4 py-2 border rounded-lg"
+                            className="w-full px-4 py-2 border rounded-lg resize-none"
                             rows="2"
                             value={model.AH}
                             onChange={(e) => setModel({...model, AH: e.target.value})}
                         />
                         <textarea
                             placeholder="Capab: Reliable methods *"
-                            className="w-full px-4 py-2 border rounded-lg"
+                            className="w-full px-4 py-2 border rounded-lg resize-none"
                             rows="2"
                             value={model.Capab}
                             onChange={(e) => setModel({...model, Capab: e.target.value})}
                         />
                         <textarea
                             placeholder="Cons: Procedures that persist *"
-                            className="w-full px-4 py-2 border rounded-lg"
+                            className="w-full px-4 py-2 border rounded-lg resize-none"
                             rows="2"
                             value={model.Cons}
                             onChange={(e) => setModel({...model, Cons: e.target.value})}
@@ -3850,7 +3916,7 @@ Saint Petersburg College Ethics Institute
                                 and coherence requirements shape what each can see?
                             </p>
                             <textarea
-                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500"
+                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 resize-none"
                                 rows="4"
                                 placeholder="Reflect on patterns you noticed..."
                                 value={reflections.patterns}
@@ -3868,7 +3934,7 @@ Saint Petersburg College Ethics Institute
                                 What becomes visible at OS2 that's invisible at OS1?
                             </p>
                             <textarea
-                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500"
+                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 resize-none"
                                 rows="4"
                                 placeholder="Reflect on OS1/OS2 insights..."
                                 value={reflections.osInsight}
@@ -3886,7 +3952,7 @@ Saint Petersburg College Ethics Institute
                                 How does this affect which ethical frameworks are accessible to you right now?
                             </p>
                             <textarea
-                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500"
+                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 resize-none"
                                 rows="4"
                                 placeholder="Reflect on your coherence state..."
                                 value={reflections.coherenceReflection}
@@ -3904,7 +3970,7 @@ Saint Petersburg College Ethics Institute
                                 relationships) will Toulmin + coherence analysis be useful?
                             </p>
                             <textarea
-                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500"
+                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 resize-none"
                                 rows="4"
                                 placeholder="Describe a practical application..."
                                 value={reflections.application}
@@ -3922,7 +3988,7 @@ Saint Petersburg College Ethics Institute
                                 currently challenging? What concrete steps could improve your coherence dimensions?
                             </p>
                             <textarea
-                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500"
+                                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 resize-none"
                                 rows="4"
                                 placeholder="Reflect on growth opportunities..."
                                 value={reflections.personalGrowth}
