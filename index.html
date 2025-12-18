@@ -2316,7 +2316,11 @@ Educational use permitted. Attribution required.
                 {
                     id: 'dimensions',
                     title: 'Coherence Analysis',
-                    canProgress: () => Object.keys(dimensionAnalysis).length === 5
+                    canProgress: () => {
+                        // Check if all 5 dimensions have been analyzed (marked as true or false)
+                        const dimensions = ['BRC', 'KIC', 'CIC', 'ISC', 'TNC'];
+                        return dimensions.every(dim => dimensionAnalysis[dim] !== undefined);
+                    }
                 },
                 {
                     id: 'toulmin',
@@ -2326,7 +2330,12 @@ Educational use permitted. Attribution required.
                 {
                     id: 'personal',
                     title: 'Personal Application',
-                    canProgress: () => Object.keys(personalAssessment).length === 5
+                    canProgress: () => {
+                        // Check if platform selected AND all 5 dimensions rated
+                        const dimensions = ['BRC', 'KIC', 'CIC', 'ISC', 'TNC'];
+                        return personalAssessment.platform && 
+                               dimensions.every(dim => personalAssessment[dim] !== undefined);
+                    }
                 },
                 {
                     id: 'synthesis',
@@ -2468,10 +2477,29 @@ Educational use permitted. Attribution required.
                     <div className="space-y-6">
                         <div className="bg-purple-50 border-2 border-purple-300 rounded-lg p-6">
                             <h3 className="text-xl font-bold text-purple-900 mb-3">Your Task: Analyze Each Dimension</h3>
-                            <p className="text-gray-700">
+                            <p className="text-gray-700 mb-3">
                                 For each coherence dimension, identify HOW Instagram/Meta compromises it. Click "Analyze" 
                                 on each dimension to see the evidence, then mark it as "Compromised" or "Not Compromised."
                             </p>
+                            <div className="bg-white rounded-lg p-3 mt-3">
+                                <p className="text-sm font-semibold text-gray-700 mb-2">Progress:</p>
+                                <div className="flex space-x-2">
+                                    {['BRC', 'KIC', 'CIC', 'ISC', 'TNC'].map(dim => (
+                                        <div
+                                            key={dim}
+                                            className={`flex-1 h-2 rounded ${
+                                                dimensionAnalysis[dim] !== undefined
+                                                    ? 'bg-green-500'
+                                                    : 'bg-gray-300'
+                                            }`}
+                                            title={dim}
+                                        />
+                                    ))}
+                                </div>
+                                <p className="text-xs text-gray-600 mt-1">
+                                    {['BRC', 'KIC', 'CIC', 'ISC', 'TNC'].filter(dim => dimensionAnalysis[dim] !== undefined).length} of 5 dimensions analyzed
+                                </p>
+                            </div>
                         </div>
 
                         {dimensions.map(dimension => {
@@ -2547,19 +2575,27 @@ Educational use permitted. Attribution required.
                             );
                         })}
 
-                        {Object.keys(dimensionAnalysis).length === 5 && (
-                            <div className="bg-green-50 border-2 border-green-400 rounded-lg p-6">
-                                <h4 className="font-bold text-green-900 mb-2">✓ Analysis Complete</h4>
-                                <p className="text-sm text-gray-700 mb-3">
-                                    You've analyzed all 5 dimensions. Notice how systematic the extraction is - 
-                                    Meta compromises multiple coherence dimensions simultaneously.
-                                </p>
-                                <p className="text-sm text-gray-700 font-semibold">
-                                    Summary: {Object.values(dimensionAnalysis).filter(v => v === true).length} of 5 dimensions 
-                                    identified as compromised.
-                                </p>
-                            </div>
-                        )}
+                        {(() => {
+                            const dimensions = ['BRC', 'KIC', 'CIC', 'ISC', 'TNC'];
+                            const allAnalyzed = dimensions.every(dim => dimensionAnalysis[dim] !== undefined);
+                            
+                            if (allAnalyzed) {
+                                const compromisedCount = dimensions.filter(dim => dimensionAnalysis[dim] === true).length;
+                                return (
+                                    <div className="bg-green-50 border-2 border-green-400 rounded-lg p-6">
+                                        <h4 className="font-bold text-green-900 mb-2">✓ Analysis Complete</h4>
+                                        <p className="text-sm text-gray-700 mb-3">
+                                            You've analyzed all 5 dimensions. Notice how systematic the extraction is - 
+                                            Meta compromises multiple coherence dimensions simultaneously.
+                                        </p>
+                                        <p className="text-sm text-gray-700 font-semibold">
+                                            Summary: {compromisedCount} of 5 dimensions identified as compromised.
+                                        </p>
+                                    </div>
+                                );
+                            }
+                            return null;
+                        })()}
                     </div>
                 );
             };
@@ -2761,48 +2797,55 @@ Educational use permitted. Attribution required.
                             </div>
                         )}
 
-                        {Object.keys(personalAssessment).length === 6 && (
-                            <div className="bg-blue-50 border-2 border-blue-400 rounded-lg p-6">
-                                <h4 className="font-bold text-blue-900 mb-3">Your Coherence Assessment Results</h4>
-                                <div className="grid md:grid-cols-2 gap-4 mb-4">
-                                    <div>
-                                        <p className="text-sm font-semibold text-gray-700 mb-2">Dimensions Most Compromised:</p>
-                                        <ul className="text-sm text-gray-700 space-y-1">
-                                            {['BRC', 'CIC', 'KIC', 'TNC', 'ISC']
-                                                .filter(dim => personalAssessment[dim] >= 4)
-                                                .map(dim => <li key={dim}>• {dim} (Score: {personalAssessment[dim]}/5)</li>)
-                                            }
-                                            {['BRC', 'CIC', 'KIC', 'TNC', 'ISC']
-                                                .filter(dim => personalAssessment[dim] >= 4).length === 0 &&
-                                                <li className="text-green-700">None severely compromised!</li>
-                                            }
-                                        </ul>
+                        {(() => {
+                            const dimensions = ['BRC', 'CIC', 'KIC', 'TNC', 'ISC'];
+                            const allRated = personalAssessment.platform && 
+                                           dimensions.every(dim => personalAssessment[dim] !== undefined);
+                            
+                            if (allRated) {
+                                const avgScore = dimensions.reduce((sum, dim) => sum + personalAssessment[dim], 0) / 5;
+                                const highCompromise = dimensions.filter(dim => personalAssessment[dim] >= 4);
+                                
+                                return (
+                                    <div className="bg-blue-50 border-2 border-blue-400 rounded-lg p-6">
+                                        <h4 className="font-bold text-blue-900 mb-3">Your Coherence Assessment Results</h4>
+                                        <div className="grid md:grid-cols-2 gap-4 mb-4">
+                                            <div>
+                                                <p className="text-sm font-semibold text-gray-700 mb-2">Dimensions Most Compromised:</p>
+                                                <ul className="text-sm text-gray-700 space-y-1">
+                                                    {highCompromise.length > 0 ? (
+                                                        highCompromise.map(dim => (
+                                                            <li key={dim}>• {dim} (Score: {personalAssessment[dim]}/5)</li>
+                                                        ))
+                                                    ) : (
+                                                        <li className="text-green-700">None severely compromised!</li>
+                                                    )}
+                                                </ul>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-semibold text-gray-700 mb-2">Overall Pattern:</p>
+                                                <p className="text-sm text-gray-700">
+                                                    Average score: {avgScore.toFixed(1)}/5
+                                                </p>
+                                                <p className="text-xs text-gray-600 mt-2">
+                                                    {avgScore >= 3.5
+                                                        ? 'Significant coherence extraction detected. Consider limiting use or changing platforms.'
+                                                        : 'Moderate impact. Stay aware of how it affects you.'}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="bg-white border-l-4 border-blue-600 p-4">
+                                            <p className="text-sm text-gray-700">
+                                                <strong>Remember:</strong> This isn't about moral judgment. It's about understanding 
+                                                how systems affect YOUR coherence. Armed with this knowledge, you can make informed choices 
+                                                about when/how/whether to engage.
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="text-sm font-semibold text-gray-700 mb-2">Overall Pattern:</p>
-                                        <p className="text-sm text-gray-700">
-                                            Average score: {
-                                                (Object.values(personalAssessment)
-                                                    .filter(v => typeof v === 'number')
-                                                    .reduce((a,b) => a+b, 0) / 5).toFixed(1)
-                                            }/5
-                                        </p>
-                                        <p className="text-xs text-gray-600 mt-2">
-                                            {Object.values(personalAssessment).filter(v => typeof v === 'number').reduce((a,b) => a+b, 0) / 5 >= 3.5
-                                                ? 'Significant coherence extraction detected. Consider limiting use or changing platforms.'
-                                                : 'Moderate impact. Stay aware of how it affects you.'}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="bg-white border-l-4 border-blue-600 p-4">
-                                    <p className="text-sm text-gray-700">
-                                        <strong>Remember:</strong> This isn't about moral judgment. It's about understanding 
-                                        how systems affect YOUR coherence. Armed with this knowledge, you can make informed choices 
-                                        about when/how/whether to engage.
-                                    </p>
-                                </div>
-                            </div>
-                        )}
+                                );
+                            }
+                            return null;
+                        })()}
                     </div>
                 );
             };
@@ -2964,26 +3007,37 @@ Educational use permitted. Attribution required.
                             ← Previous
                         </button>
                         
-                        {currentPhase < phases.length - 1 ? (
-                            <button
-                                onClick={() => setCurrentPhase(currentPhase + 1)}
-                                disabled={!canProgressPhase()}
-                                className={`px-6 py-3 rounded-lg font-semibold ${
-                                    canProgressPhase()
-                                        ? 'bg-purple-600 text-white hover:bg-purple-700'
-                                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                }`}
-                            >
-                                Next →
-                            </button>
-                        ) : (
-                            <button
-                                onClick={() => { onComplete(); onNext(); }}
-                                className="px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
-                            >
-                                Continue to Toulmin + Coherence →
-                            </button>
-                        )}
+                        <div className="flex flex-col items-end">
+                            {currentPhase < phases.length - 1 ? (
+                                <>
+                                    <button
+                                        onClick={() => setCurrentPhase(currentPhase + 1)}
+                                        disabled={!canProgressPhase()}
+                                        className={`px-6 py-3 rounded-lg font-semibold ${
+                                            canProgressPhase()
+                                                ? 'bg-purple-600 text-white hover:bg-purple-700'
+                                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                        }`}
+                                    >
+                                        Next →
+                                    </button>
+                                    {!canProgressPhase() && (
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            {currentPhase === 1 && 'Complete all 5 dimension analyses to continue'}
+                                            {currentPhase === 2 && 'Write your claim (20+ characters) to continue'}
+                                            {currentPhase === 3 && 'Select platform and rate all 5 dimensions to continue'}
+                                        </p>
+                                    )}
+                                </>
+                            ) : (
+                                <button
+                                    onClick={() => { onComplete(); onNext(); }}
+                                    className="px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                                >
+                                    Continue to Toulmin + Coherence →
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
             );
