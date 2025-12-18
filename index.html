@@ -2553,6 +2553,610 @@ Educational use permitted. Attribution required.
         // ============================================================================
         // META CASE STUDY - FIXED (INPUT FOCUS BUG RESOLVED)
         // ============================================================================
+       // ============================================================================
+        // META CASE STUDY - FIXED (COMPONENTS EXTRACTED TO PREVENT FOCUS LOSS)
+        // ============================================================================
+
+        // 1. Background Component (Extracted)
+        const MetaBackgroundPhase = () => (
+            <div className="space-y-6">
+                <div className="bg-gradient-to-br from-red-100 to-orange-100 border-2 border-red-400 rounded-lg p-6">
+                    <h3 className="text-2xl font-bold text-red-900 mb-4">📱 A Real-World Case You Know</h3>
+                    <p className="text-gray-700 mb-4">
+                        In 2021, whistleblower <strong>Frances Haugen</strong> testified before the U.S. Congress, revealing 
+                        Meta's (Facebook/Instagram) internal research showing that:
+                    </p>
+                    <ul className="space-y-2 text-gray-700 mb-4">
+                        <li>• <strong>Instagram worsened body image issues, anxiety, depression, and self-harm risk</strong> for adolescent girls</li>
+                        <li>• These harms were <strong>mechanistically linked to engagement-maximizing features</strong></li>
+                        <li>• <strong>Executives knew</strong> but chose not to implement changes (citing reduced engagement/profit)</li>
+                    </ul>
+                    <div className="bg-white border-l-4 border-red-600 p-4 rounded">
+                        <p className="text-sm text-gray-800 font-semibold">
+                            The Ethical Question: Was Meta's behavior ethically permissible given that users 
+                            voluntarily chose to engage with its platforms, even when the company knew its 
+                            systems were degrading users' psychological well-being?
+                        </p>
+                    </div>
+                </div>
+
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-6">
+                    <h4 className="font-bold text-blue-900 mb-2">Why This Case Matters for You</h4>
+                    <p className="text-sm text-gray-700">
+                        Most of you use Instagram, TikTok, or similar platforms daily. You've probably felt the pull to 
+                        "just scroll a bit more" even when you know you should stop. This case study shows you 
+                        <strong> what's actually happening</strong> - not to blame you, but to give you tools to understand 
+                        and defend against coherence extraction.
+                    </p>
+                </div>
+
+                <div className="bg-purple-50 border-2 border-purple-300 rounded-lg p-6">
+                    <h4 className="font-bold text-purple-900 mb-3">The Coherence Framework Applied</h4>
+                    <p className="text-gray-700 mb-3">
+                        Traditional ethics might ask: "Is Instagram morally wrong?" or "Do users consent?"
+                    </p>
+                    <p className="text-gray-700 mb-3">
+                        <strong>Coherence analysis asks:</strong> "Which coherence dimensions does Instagram systematically 
+                        compromise? What happens when those dimensions break down? Can meaningful consent exist when 
+                        the conditions for reflective choice are being degraded?"
+                    </p>
+                    <p className="text-gray-700 font-semibold">
+                        This is an OS2-level question - we're analyzing how the system affects the conditions under which 
+                        ethical reasoning is possible at all.
+                    </p>
+                </div>
+            </div>
+        );
+
+        // 2. Dimension Analysis Component (Extracted)
+        const MetaDimensionPhase = ({ dimensionAnalysis, setDimensionAnalysis }) => {
+            const dimensions = [
+                {
+                    id: 'BRC',
+                    name: 'Biological-Regulatory Coherence',
+                    icon: '🫀',
+                    description: 'Emotional regulation, stress management, sleep',
+                    metaCompromises: [
+                        'Sleep disruption from late-night scrolling',
+                        'Chronic stress and anxiety from social comparison',
+                        'Dopamine hijacking through intermittent reinforcement',
+                        'Emotional dysregulation from curated "perfect" lives'
+                    ],
+                    evidence: 'Internal Meta research showed increased anxiety and depression correlated with usage time'
+                },
+                {
+                    id: 'CIC',
+                    name: 'Cognitive-Informational Coherence',
+                    icon: '🧠',
+                    description: 'Mental bandwidth, ability to process complexity',
+                    metaCompromises: [
+                        'Attentional hijacking through infinite scroll',
+                        'Cognitive overload from rapid content switching',
+                        'Reduced reflection time',
+                        'Context collapse (everything flattened to feed)'
+                    ],
+                    evidence: 'Algorithm maximizes salience, not meaning - overwhelming cognitive capacity'
+                },
+                {
+                    id: 'KIC',
+                    name: 'Kernel Identity Coherence',
+                    icon: '🎭',
+                    description: 'Integrated sense of self',
+                    metaCompromises: [
+                        'Identity tied to engagement metrics (likes, follows)',
+                        'Performative self-presentation required',
+                        'Fragmentation across different audience contexts',
+                        'Self-worth dependent on external validation'
+                    ],
+                    evidence: 'Adolescents reported feeling "alienated from own bodies" despite recognizing harm'
+                },
+                {
+                    id: 'TNC',
+                    name: 'Temporal-Narrative Coherence',
+                    icon: '⏳',
+                    description: 'Time horizon, long-term thinking',
+                    metaCompromises: [
+                        'Collapsed to perpetual present',
+                        'Immediate validation outweighs long-term well-being',
+                        'Future consequences cognitively inaccessible',
+                        'Repeated failed intentions to disengage'
+                    ],
+                    evidence: 'Users report knowing it\'s harmful but being unable to stop - TNC collapse'
+                },
+                {
+                    id: 'ISC',
+                    name: 'Institutional-Structural Coherence',
+                    icon: '🏛️',
+                    description: 'Supportive vs. extractive institutions',
+                    metaCompromises: [
+                        'Institution rewards engagement regardless of harm',
+                        'Executives punish internal dissent',
+                        'Psychological costs externalized to users',
+                        'Plausible deniability through "user choice" rhetoric'
+                    ],
+                    evidence: 'Frances Haugen testimony revealed executives chose profit over user well-being'
+                }
+            ];
+
+            return (
+                <div className="space-y-6">
+                    <div className="bg-purple-50 border-2 border-purple-300 rounded-lg p-6">
+                        <h3 className="text-xl font-bold text-purple-900 mb-3">Your Task: Analyze Each Dimension</h3>
+                        <p className="text-gray-700 mb-3">
+                            For each coherence dimension, identify HOW Instagram/Meta compromises it. Click "Analyze" 
+                            on each dimension to see the evidence, then mark it as "Compromised" or "Not Compromised."
+                        </p>
+                        <div className="bg-white rounded-lg p-3 mt-3">
+                            <p className="text-sm font-semibold text-gray-700 mb-2">Progress:</p>
+                            <div className="flex space-x-2">
+                                {['BRC', 'KIC', 'CIC', 'ISC', 'TNC'].map(dim => (
+                                    <div
+                                        key={dim}
+                                        className={`flex-1 h-2 rounded ${
+                                            dimensionAnalysis[dim] !== undefined
+                                                ? 'bg-green-500'
+                                                : 'bg-gray-300'
+                                        }`}
+                                        title={dim}
+                                    />
+                                ))}
+                            </div>
+                            <p className="text-xs text-gray-600 mt-1">
+                                {['BRC', 'KIC', 'CIC', 'ISC', 'TNC'].filter(dim => dimensionAnalysis[dim] !== undefined).length} of 5 dimensions analyzed
+                            </p>
+                        </div>
+                    </div>
+
+                    {dimensions.map(dimension => {
+                        const isAnalyzed = dimensionAnalysis[dimension.id] !== undefined;
+                        const isCompromised = dimensionAnalysis[dimension.id] === true;
+
+                        return (
+                            <div key={dimension.id} className="bg-white border-2 border-gray-300 rounded-lg p-6">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex items-center space-x-3">
+                                        <span className="text-4xl">{dimension.icon}</span>
+                                        <div>
+                                            <h4 className="text-lg font-bold text-gray-900">{dimension.id}: {dimension.name}</h4>
+                                            <p className="text-sm text-gray-600">{dimension.description}</p>
+                                        </div>
+                                    </div>
+                                    {isAnalyzed && (
+                                        <div className={`px-4 py-2 rounded-lg font-bold ${
+                                            isCompromised ? 'bg-red-100 text-red-900' : 'bg-green-100 text-green-900'
+                                        }`}>
+                                            {isCompromised ? '⚠️ Compromised' : '✓ Intact'}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {!isAnalyzed && (
+                                    <button
+                                        onClick={() => {
+                                            const newAnalysis = {...dimensionAnalysis};
+                                            newAnalysis[`${dimension.id}_expanded`] = true;
+                                            setDimensionAnalysis(newAnalysis);
+                                        }}
+                                        className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                                    >
+                                        🔍 Analyze This Dimension
+                                    </button>
+                                )}
+
+                                {dimensionAnalysis[`${dimension.id}_expanded`] && (
+                                    <div className="mt-4 space-y-4">
+                                        <div className="bg-red-50 border-l-4 border-red-500 p-4">
+                                            <h5 className="font-bold text-red-900 mb-2">How Meta Compromises {dimension.id}:</h5>
+                                            <ul className="space-y-1 text-sm text-gray-700">
+                                                {dimension.metaCompromises.map((compromise, i) => (
+                                                    <li key={i}>• {compromise}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+
+                                        <div className="bg-blue-50 border-l-4 border-blue-500 p-4">
+                                            <h5 className="font-bold text-blue-900 mb-2">Evidence:</h5>
+                                            <p className="text-sm text-gray-700">{dimension.evidence}</p>
+                                        </div>
+
+                                        <div className="flex space-x-4">
+                                            <button
+                                                onClick={() => setDimensionAnalysis({...dimensionAnalysis, [dimension.id]: true})}
+                                                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700"
+                                            >
+                                                Mark as Compromised
+                                            </button>
+                                            <button
+                                                onClick={() => setDimensionAnalysis({...dimensionAnalysis, [dimension.id]: false})}
+                                                className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700"
+                                            >
+                                                Mark as Intact
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+            );
+        };
+
+        // 3. Toulmin Argument Construction Component (Extracted)
+        const MetaToulminPhase = ({ toulminConstruction, setToulminConstruction }) => {
+            const showAdditionalFields = toulminConstruction.claim.length > 20;
+            
+            return (
+                <div className="space-y-6">
+                    <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-6">
+                        <h3 className="text-xl font-bold text-blue-900 mb-3">Build Meta's Implicit Ethical Argument</h3>
+                        <p className="text-gray-700 mb-3">
+                            Meta never explicitly stated: "It's ethical to extract users' coherence for profit." 
+                            But their actions implied an argument. Let's reconstruct it using Toulmin's framework.
+                        </p>
+                        <p className="text-sm text-gray-600">
+                            Think about what Meta would need to claim, and what grounds/warrants would support that claim.
+                        </p>
+                    </div>
+
+                    <div className="space-y-4">
+                        <div className="bg-white border-2 border-blue-300 rounded-lg p-6">
+                            <h4 className="font-bold text-blue-900 mb-3">📍 CLAIM: What is Meta's implicit ethical claim?</h4>
+                            <p className="text-sm text-gray-600 mb-3">
+                                Example: "It's ethically permissible to maximize engagement even when it harms users' 
+                                psychological well-being"
+                            </p>
+                            <textarea
+                                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 resize-none"
+                                rows="3"
+                                placeholder="Write Meta's implicit ethical claim here..."
+                                value={toulminConstruction.claim}
+                                onChange={(e) => setToulminConstruction({...toulminConstruction, claim: e.target.value})}
+                            />
+                            {!showAdditionalFields && (
+                                <p className="text-xs text-gray-500 mt-2">
+                                    Write at least 20 characters to unlock the next sections
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Additional fields controlled via opacity to keep layout stable */}
+                        <div style={{ 
+                            opacity: showAdditionalFields ? 1 : 0.3,
+                            pointerEvents: showAdditionalFields ? 'auto' : 'none',
+                            transition: 'opacity 0.3s ease'
+                        }}>
+                            <div className="bg-white border-2 border-green-300 rounded-lg p-6">
+                                <h4 className="font-bold text-green-900 mb-3">🔍 GROUNDS: What evidence supports this claim?</h4>
+                                <p className="text-sm text-gray-600 mb-3">
+                                    What facts or observations would Meta point to? (Check all that apply)
+                                </p>
+                                {[
+                                    'Users voluntarily sign up and continue using the platform',
+                                    'Terms of service are publicly available',
+                                    'Users can delete their accounts at any time',
+                                    'Platform provides value (social connection, entertainment)',
+                                    'Engagement metrics show users "enjoy" the platform',
+                                    'Other companies do the same thing'
+                                ].map((ground, i) => (
+                                    <label key={i} className="flex items-start space-x-2 mb-2">
+                                        <input
+                                            type="checkbox"
+                                            className="mt-1"
+                                            checked={toulminConstruction.grounds.includes(ground)}
+                                            onChange={(e) => {
+                                                const newGrounds = e.target.checked
+                                                    ? [...toulminConstruction.grounds, ground]
+                                                    : toulminConstruction.grounds.filter(g => g !== ground);
+                                                setToulminConstruction({...toulminConstruction, grounds: newGrounds});
+                                            }}
+                                        />
+                                        <span className="text-sm text-gray-700">{ground}</span>
+                                    </label>
+                                ))}
+                            </div>
+
+                            <div className="bg-white border-2 border-purple-300 rounded-lg p-6 mt-4">
+                                <h4 className="font-bold text-purple-900 mb-3">🔗 WARRANT: What connects grounds to claim?</h4>
+                                <p className="text-sm text-gray-600 mb-3">
+                                    What principle or reasoning links the evidence to the conclusion?
+                                </p>
+                                <textarea
+                                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 resize-none"
+                                    rows="3"
+                                    placeholder="Example: 'If users voluntarily choose to use a platform, then the platform bears no responsibility for harms...'"
+                                    value={toulminConstruction.warrant}
+                                    onChange={(e) => setToulminConstruction({...toulminConstruction, warrant: e.target.value})}
+                                />
+                            </div>
+
+                            <div className="bg-red-50 border-2 border-red-300 rounded-lg p-6 mt-4">
+                                <h4 className="font-bold text-red-900 mb-3">🚫 REBUTTALS: Where does this argument fail?</h4>
+                                <p className="text-sm text-gray-600 mb-3">
+                                    Using coherence analysis, identify the weaknesses:
+                                </p>
+                                {[
+                                    '"Voluntary use" assumes intact coherence - but Meta systematically degrades it',
+                                    'Cannot consent to something that undermines capacity to consent',
+                                    'Terms of service assume users can parse 10,000+ words of legalese',
+                                    'Platform provides value AND extracts coherence - net harm question',
+                                    'Other companies doing it doesn\'t make it ethical',
+                                    'Engagement metrics measure addiction, not flourishing'
+                                ].map((rebuttal, i) => (
+                                    <label key={i} className="flex items-start space-x-2 mb-2">
+                                        <input
+                                            type="checkbox"
+                                            className="mt-1"
+                                            checked={toulminConstruction.rebuttals.includes(rebuttal)}
+                                            onChange={(e) => {
+                                                const newRebuttals = e.target.checked
+                                                    ? [...toulminConstruction.rebuttals, rebuttal]
+                                                    : toulminConstruction.rebuttals.filter(r => r !== rebuttal);
+                                                setToulminConstruction({...toulminConstruction, rebuttals: newRebuttals});
+                                            }}
+                                        />
+                                        <span className="text-sm text-gray-700">{rebuttal}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // 4. Personal Application Component (Extracted)
+        const MetaPersonalPhase = ({ personalAssessment, setPersonalAssessment }) => {
+            const platforms = [
+                { id: 'instagram', name: 'Instagram', icon: '📷' },
+                { id: 'tiktok', name: 'TikTok', icon: '🎵' },
+                { id: 'twitter', name: 'Twitter/X', icon: '🐦' },
+                { id: 'facebook', name: 'Facebook', icon: '👥' },
+                { id: 'snapchat', name: 'Snapchat', icon: '👻' }
+            ];
+
+            return (
+                <div className="space-y-6">
+                    <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-6">
+                        <h3 className="text-xl font-bold text-yellow-900 mb-3">📱 Assess YOUR Social Media Coherence</h3>
+                        <p className="text-gray-700 mb-3">
+                            This isn't about judgment - it's about self-knowledge. For the platform you use most, 
+                            rate how it affects each coherence dimension.
+                        </p>
+                        <p className="text-sm text-gray-600">
+                            1 = Strongly preserves, 3 = Neutral, 5 = Strongly compromises
+                        </p>
+                    </div>
+
+                    <div className="bg-white border-2 border-gray-300 rounded-lg p-6">
+                        <h4 className="font-bold mb-3">Select Your Primary Platform:</h4>
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                            {platforms.map(platform => (
+                                <button
+                                    key={platform.id}
+                                    onClick={() => setPersonalAssessment({...personalAssessment, platform: platform.id})}
+                                    className={`p-4 border-2 rounded-lg text-center ${
+                                        personalAssessment.platform === platform.id
+                                            ? 'border-purple-500 bg-purple-50'
+                                            : 'border-gray-300 hover:border-gray-400'
+                                    }`}
+                                >
+                                    <div className="text-3xl mb-1">{platform.icon}</div>
+                                    <div className="text-sm font-semibold">{platform.name}</div>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {personalAssessment.platform && (
+                        <div className="space-y-4">
+                            {['BRC', 'CIC', 'KIC', 'TNC', 'ISC'].map(dim => {
+                                const labels = {
+                                    BRC: 'Sleep, stress, emotional regulation',
+                                    CIC: 'Mental clarity, ability to focus',
+                                    KIC: 'Authentic self vs. performative self',
+                                    TNC: 'Long-term thinking vs. immediate gratification',
+                                    ISC: 'Platform supports your goals vs. exploits you'
+                                };
+
+                                return (
+                                    <div key={dim} className="bg-gray-50 border-2 border-gray-300 rounded-lg p-6">
+                                        <div className="flex justify-between items-center mb-3">
+                                            <div>
+                                                <h5 className="font-bold text-gray-900">{dim}</h5>
+                                                <p className="text-sm text-gray-600">{labels[dim]}</p>
+                                            </div>
+                                            <span className="text-2xl font-bold text-purple-600">
+                                                {personalAssessment[dim]}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center space-x-3">
+                                            <span className="text-xs font-semibold text-green-700">Preserves</span>
+                                            <input
+                                                type="range"
+                                                min="1"
+                                                max="5"
+                                                value={personalAssessment[dim]}
+                                                onChange={(e) => setPersonalAssessment({
+                                                    ...personalAssessment,
+                                                    [dim]: parseInt(e.target.value)
+                                                })}
+                                                className="flex-1"
+                                            />
+                                            <span className="text-xs font-semibold text-red-700">Compromises</span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+
+                    {(() => {
+                        const dimensions = ['BRC', 'CIC', 'KIC', 'TNC', 'ISC'];
+                        const allRated = personalAssessment.platform && 
+                                         dimensions.every(dim => personalAssessment[dim] !== undefined);
+                        
+                        if (allRated) {
+                            const avgScore = dimensions.reduce((sum, dim) => sum + personalAssessment[dim], 0) / 5;
+                            const highCompromise = dimensions.filter(dim => personalAssessment[dim] >= 4);
+                            
+                            return (
+                                <div className="bg-blue-50 border-2 border-blue-400 rounded-lg p-6">
+                                    <h4 className="font-bold text-blue-900 mb-3">Your Coherence Assessment Results</h4>
+                                    <div className="grid md:grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <p className="text-sm font-semibold text-gray-700 mb-2">Dimensions Most Compromised:</p>
+                                            <ul className="text-sm text-gray-700 space-y-1">
+                                                {highCompromise.length > 0 ? (
+                                                    highCompromise.map(dim => (
+                                                        <li key={dim}>• {dim} (Score: {personalAssessment[dim]}/5)</li>
+                                                    ))
+                                                ) : (
+                                                    <li className="text-green-700">None severely compromised!</li>
+                                                )}
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-semibold text-gray-700 mb-2">Overall Pattern:</p>
+                                            <p className="text-sm text-gray-700">
+                                                Average score: {avgScore.toFixed(1)}/5
+                                            </p>
+                                            <p className="text-xs text-gray-600 mt-2">
+                                                {avgScore >= 3.5
+                                                    ? 'Significant coherence extraction detected. Consider limiting use or changing platforms.'
+                                                    : 'Moderate impact. Stay aware of how it affects you.'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="bg-white border-l-4 border-blue-600 p-4">
+                                        <p className="text-sm text-gray-700">
+                                            <strong>Remember:</strong> This isn't about moral judgment. It's about understanding 
+                                            how systems affect YOUR coherence. Armed with this knowledge, you can make informed choices 
+                                            about when/how/whether to engage.
+                                        </p>
+                                    </div>
+                                </div>
+                            );
+                        }
+                        return null;
+                    })()}
+                </div>
+            );
+        };
+
+        // 5. Synthesis Component (Extracted)
+        const MetaSynthesisPhase = ({ showBiologicalAnalogue, setShowBiologicalAnalogue }) => (
+            <div className="space-y-6">
+                <div className="bg-gradient-to-br from-purple-100 to-blue-100 border-2 border-purple-400 rounded-lg p-6">
+                    <h3 className="text-2xl font-bold text-purple-900 mb-4">🎯 Key Takeaways</h3>
+                    
+                    <div className="space-y-4">
+                        <div className="bg-white border-l-4 border-purple-600 p-4 rounded">
+                            <h4 className="font-bold text-purple-900 mb-2">1. Coherence Extraction is Systematic</h4>
+                            <p className="text-sm text-gray-700">
+                                Meta doesn't just harm ONE dimension - it compromises ALL FIVE simultaneously. 
+                                This isn't accidental; it's how engagement optimization works.
+                            </p>
+                        </div>
+
+                        <div className="bg-white border-l-4 border-blue-600 p-4 rounded">
+                            <h4 className="font-bold text-blue-900 mb-2">2. "Voluntary Use" Requires Intact Coherence</h4>
+                            <p className="text-sm text-gray-700">
+                                You can't consent to something that systematically undermines your capacity to consent. 
+                                Traditional ethics focused on consent assumes coherence - but what happens when consent 
+                                itself requires the very capacities being extracted?
+                            </p>
+                        </div>
+
+                        <div className="bg-white border-l-4 border-green-600 p-4 rounded">
+                            <h4 className="font-bold text-green-900 mb-2">3. This Isn't About Individual Moral Failure</h4>
+                            <p className="text-sm text-gray-700">
+                                If you struggle to put your phone down, it's not because you're weak. It's because 
+                                billion-dollar companies employ teams of engineers to make it as difficult as possible. 
+                                Agency hijacking isn't a moral defect - it's a structural vulnerability.
+                            </p>
+                        </div>
+
+                        <div className="bg-white border-l-4 border-yellow-600 p-4 rounded">
+                            <h4 className="font-bold text-yellow-900 mb-2">4. Responsibility Shifts to Designers</h4>
+                            <p className="text-sm text-gray-700">
+                                When systems extract coherence faster than individuals can restore it, ethical responsibility 
+                                moves from users to designers, institutions, and regulators. This is a design ethics problem, 
+                                not just an individual ethics problem.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <button
+                    onClick={() => setShowBiologicalAnalogue(!showBiologicalAnalogue)}
+                    className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700"
+                >
+                    {showBiologicalAnalogue ? '▼' : '▶'} Optional: Biological Analogues (Advanced)
+                </button>
+
+                {showBiologicalAnalogue && (
+                    <div className="bg-indigo-50 border-2 border-indigo-400 rounded-lg p-6">
+                        <h4 className="font-bold text-indigo-900 mb-3">🔬 Cross-Level Pattern: Agency Hijacking</h4>
+                        <p className="text-gray-700 mb-4">
+                            This pattern isn't unique to technology. It appears across biological levels:
+                        </p>
+
+                        <div className="space-y-4">
+                            <div className="bg-white p-4 rounded border-l-4 border-indigo-600">
+                                <h5 className="font-bold text-indigo-900 mb-2">Horsehair Worm → Cricket</h5>
+                                <p className="text-sm text-gray-700">
+                                    Parasite alters cricket's neurochemistry. Cricket "voluntarily" enters water 
+                                    (which crickets normally avoid), where worm emerges. Cricket's motor control intact, 
+                                    but internal valuation system reprogrammed to serve parasite's reproductive needs.
+                                </p>
+                            </div>
+
+                            <div className="bg-white p-4 rounded border-l-4 border-indigo-600">
+                                <h5 className="font-bold text-indigo-900 mb-2">HIV → Immune System</h5>
+                                <p className="text-sm text-gray-700">
+                                    Virus doesn't destroy immune cells - it exploits regulatory pathways, induces tolerance, 
+                                    reprograms signaling. Immune system continues functioning but in degraded mode benefiting pathogen.
+                                </p>
+                            </div>
+
+                            <div className="bg-white p-4 rounded border-l-4 border-indigo-600">
+                                <h5 className="font-bold text-indigo-900 mb-2">Meta → User</h5>
+                                <p className="text-sm text-gray-700">
+                                    Platform doesn't force engagement - it alters attentional salience, reward timing, 
+                                    identity validation loops. Users act in ways contrary to own interests while feeling 
+                                    internally motivated.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="bg-yellow-50 border-l-4 border-yellow-600 p-4 mt-4">
+                            <p className="text-sm font-semibold text-gray-800">
+                                Important: This is NOT saying "Meta is a parasite" (moral accusation). It's identifying 
+                                a STRUCTURAL PATTERN: internal control systems repurposed for external optimization goals. 
+                                Different substrates, same vulnerability. This is OS2-level analysis.
+                            </p>
+                        </div>
+                    </div>
+                )}
+
+                <div className="bg-green-50 border-2 border-green-400 rounded-lg p-6">
+                    <h4 className="font-bold text-green-900 mb-3">💡 What Would Coherence-Preserving Design Look Like?</h4>
+                    <p className="text-gray-700 mb-3">Discussion questions for next class:</p>
+                    <ul className="space-y-2 text-gray-700 text-sm">
+                        <li>• Could social media exist without engagement optimization?</li>
+                        <li>• What business models support coherence rather than extracting it?</li>
+                        <li>• Should platforms be legally required to protect user coherence?</li>
+                        <li>• How would you redesign Instagram to preserve all 5 dimensions?</li>
+                        <li>• What role should government regulation play?</li>
+                    </ul>
+                </div>
+            </div>
+        );
+
+        // ============================================================================
+        // META CASE STUDY - MAIN CONTAINER
+        // ============================================================================
         function MetaCaseSection({ onComplete, onNext }) {
             const [currentPhase, setCurrentPhase] = useState(0);
             
@@ -2603,101 +3207,101 @@ Educational use permitted. Attribution required.
                 return phase.canProgress;
             };
 
-            // RENDER FUNCTIONS (Not Components) TO PRESERVE FOCUS
-            // ---------------------------------------------------
-
-            const renderBackground = () => (
-                <div className="space-y-6">
-                    <div className="bg-gradient-to-br from-red-100 to-orange-100 border-2 border-red-400 rounded-lg p-6">
-                        <h3 className="text-2xl font-bold text-red-900 mb-4">📱 A Real-World Case You Know</h3>
-                        <p className="text-gray-700 mb-4">
-                            In 2021, whistleblower <strong>Frances Haugen</strong> testified before the U.S. Congress, revealing 
-                            Meta's (Facebook/Instagram) internal research showing that:
-                        </p>
-                        <ul className="space-y-2 text-gray-700 mb-4">
-                            <li>• <strong>Instagram worsened body image issues, anxiety, depression, and self-harm risk</strong> for adolescent girls</li>
-                            <li>• These harms were <strong>mechanistically linked to engagement-maximizing features</strong></li>
-                            <li>• <strong>Executives knew</strong> but chose not to implement changes (citing reduced engagement/profit)</li>
-                        </ul>
-                        <div className="bg-white border-l-4 border-red-600 p-4 rounded">
-                            <p className="text-sm text-gray-800 font-semibold">
-                                The Ethical Question: Was Meta's behavior ethically permissible given that users 
-                                voluntarily chose to engage with its platforms, even when the company knew its 
-                                systems were degrading users' psychological well-being?
-                            </p>
-                        </div>
+            return (
+                <div className="bg-white rounded-lg shadow-lg p-8">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-4">Case Study: Meta & Coherence Extraction</h2>
+                    
+                    {/* Phase Navigation Tabs */}
+                    <div className="flex space-x-2 mb-6 overflow-x-auto pb-2">
+                        {phases.map((phase, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => currentPhase > idx && setCurrentPhase(idx)}
+                                disabled={currentPhase < idx}
+                                className={`flex-1 px-3 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors ${
+                                    currentPhase === idx 
+                                        ? 'bg-purple-600 text-white' 
+                                        : currentPhase > idx
+                                        ? 'bg-green-100 text-green-800'
+                                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                }`}
+                            >
+                                {currentPhase > idx && '✓ '} {phase.title}
+                            </button>
+                        ))}
                     </div>
-                    <div className="bg-purple-50 border-2 border-purple-300 rounded-lg p-6">
-                        <h4 className="font-bold text-purple-900 mb-3">The Coherence Framework Applied</h4>
-                        <p className="text-gray-700 font-semibold">
-                            This is an OS2-level question - we're analyzing how the system affects the conditions under which 
-                            ethical reasoning is possible at all.
-                        </p>
+
+                    {/* Content Body - Using Extracted Components to Preserve Focus */}
+                    <div className="mb-8 min-h-[400px]">
+                        {currentPhase === 0 && <MetaBackgroundPhase />}
+                        
+                        {currentPhase === 1 && (
+                            <MetaDimensionPhase 
+                                dimensionAnalysis={dimensionAnalysis} 
+                                setDimensionAnalysis={setDimensionAnalysis} 
+                            />
+                        )}
+                        
+                        {currentPhase === 2 && (
+                            <MetaToulminPhase 
+                                toulminConstruction={toulminConstruction} 
+                                setToulminConstruction={setToulminConstruction} 
+                            />
+                        )}
+                        
+                        {currentPhase === 3 && (
+                            <MetaPersonalPhase 
+                                personalAssessment={personalAssessment} 
+                                setPersonalAssessment={setPersonalAssessment} 
+                            />
+                        )}
+                        
+                        {currentPhase === 4 && (
+                            <MetaSynthesisPhase 
+                                showBiologicalAnalogue={showBiologicalAnalogue} 
+                                setShowBiologicalAnalogue={setShowBiologicalAnalogue} 
+                            />
+                        )}
+                    </div>
+
+                    {/* Footer Navigation */}
+                    <div className="flex justify-between pt-4 border-t">
+                        <button
+                            onClick={() => setCurrentPhase(Math.max(0, currentPhase - 1))}
+                            disabled={currentPhase === 0}
+                            className={`px-6 py-2 rounded-lg font-semibold ${
+                                currentPhase === 0 ? 'bg-gray-200 text-gray-400' : 'bg-gray-300 hover:bg-gray-400'
+                            }`}
+                        >
+                            ← Previous
+                        </button>
+                        
+                        {currentPhase < phases.length - 1 ? (
+                            <button
+                                onClick={() => {
+                                    if (canProgressPhase()) setCurrentPhase(currentPhase + 1);
+                                }}
+                                disabled={!canProgressPhase()}
+                                className={`px-6 py-2 rounded-lg font-semibold ${
+                                    canProgressPhase()
+                                        ? 'bg-purple-600 text-white hover:bg-purple-700'
+                                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                }`}
+                            >
+                                Next →
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => { onComplete(); onNext(); }}
+                                className="px-6 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                            >
+                                Continue to Next Module →
+                            </button>
+                        )}
                     </div>
                 </div>
             );
-
-            const renderDimensions = () => {
-                const dims = [
-                    { id: 'BRC', name: 'Biological-Regulatory', icon: '🫀', desc: 'Sleep, stress, regulation', evidence: 'Increased anxiety/depression correlated with use' },
-                    { id: 'CIC', name: 'Cognitive-Informational', icon: '🧠', desc: 'Mental bandwidth, focus', evidence: 'Algorithm maximizes salience over meaning' },
-                    { id: 'KIC', name: 'Kernel Identity', icon: '🎭', desc: 'Integrated self', evidence: 'Alienation from own body/identity' },
-                    { id: 'TNC', name: 'Temporal-Narrative', icon: '⏳', desc: 'Long-term thinking', evidence: 'Users unable to stop despite wanting to' },
-                    { id: 'ISC', name: 'Institutional-Structural', icon: '🏛️', desc: 'Supportive institutions', evidence: 'Executives chose profit over well-being' }
-                ];
-
-                return (
-                    <div className="space-y-6">
-                        <div className="bg-purple-50 border-2 border-purple-300 rounded-lg p-6">
-                            <h3 className="text-xl font-bold text-purple-900 mb-3">Analyze Each Dimension</h3>
-                            <p className="text-gray-700">Identify how Meta compromises these capacities.</p>
-                        </div>
-                        {dims.map(d => {
-                            const isAnalyzed = dimensionAnalysis[d.id] !== undefined;
-                            const isCompromised = dimensionAnalysis[d.id] === true;
-                            const isExpanded = dimensionAnalysis[`${d.id}_expanded`];
-
-                            return (
-                                <div key={d.id} className="bg-white border-2 border-gray-300 rounded-lg p-6">
-                                    <div className="flex justify-between items-center mb-4">
-                                        <div className="flex items-center space-x-3">
-                                            <span className="text-4xl">{d.icon}</span>
-                                            <div>
-                                                <h4 className="text-lg font-bold text-gray-900">{d.id}: {d.name}</h4>
-                                                <p className="text-sm text-gray-600">{d.desc}</p>
-                                            </div>
-                                        </div>
-                                        {isAnalyzed && (
-                                            <span className={`px-3 py-1 rounded font-bold ${isCompromised ? 'bg-red-100 text-red-900' : 'bg-green-100 text-green-900'}`}>
-                                                {isCompromised ? 'Compromised' : 'Intact'}
-                                            </span>
-                                        )}
-                                    </div>
-                                    {!isAnalyzed && (
-                                        <button 
-                                            onClick={() => setDimensionAnalysis({...dimensionAnalysis, [`${d.id}_expanded`]: true})}
-                                            className="w-full py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-                                        >
-                                            Analyze
-                                        </button>
-                                    )}
-                                    {isExpanded && (
-                                        <div className="space-y-4 animate-in fade-in">
-                                            <div className="bg-blue-50 p-4 rounded border-l-4 border-blue-500">
-                                                <p className="text-sm"><strong>Evidence:</strong> {d.evidence}</p>
-                                            </div>
-                                            <div className="flex space-x-4">
-                                                <button onClick={() => setDimensionAnalysis({...dimensionAnalysis, [d.id]: true})} className="flex-1 py-2 bg-red-600 text-white rounded">Mark Compromised</button>
-                                                <button onClick={() => setDimensionAnalysis({...dimensionAnalysis, [d.id]: false})} className="flex-1 py-2 bg-green-600 text-white rounded">Mark Intact</button>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })}
-                    </div>
-                );
-            };
+        }
 
             const renderToulmin = () => {
                 const showExtra = toulminConstruction.claim.length > 20;
