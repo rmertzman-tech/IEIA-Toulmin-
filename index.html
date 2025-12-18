@@ -2550,8 +2550,13 @@ Educational use permitted. Attribution required.
         }
 
         // META CASE STUDY SECTION - COHERENCE EXTRACTION AT SCALE
+        // ============================================================================
+        // META CASE STUDY - FIXED (INPUT FOCUS BUG RESOLVED)
+        // ============================================================================
         function MetaCaseSection({ onComplete, onNext }) {
             const [currentPhase, setCurrentPhase] = useState(0);
+            
+            // STATE LIFTED TO TOP LEVEL TO PREVENT FOCUS LOSS
             const [dimensionAnalysis, setDimensionAnalysis] = useState({});
             const [toulminConstruction, setToulminConstruction] = useState({
                 claim: '',
@@ -2560,62 +2565,48 @@ Educational use permitted. Attribution required.
                 backing: '',
                 rebuttals: []
             });
-            const [personalAssessment, setPersonalAssessment] = useState({});
+            // Initialize with defaults to match visual UI sliders
+            const [personalAssessment, setPersonalAssessment] = useState({
+                BRC: 3, KIC: 3, CIC: 3, ISC: 3, TNC: 3, platform: ''
+            });
             const [showBiologicalAnalogue, setShowBiologicalAnalogue] = useState(false);
 
             const phases = [
-                {
-                    id: 'background',
-                    title: 'The Case: Meta & Instagram',
-                    canProgress: true
-                },
-                {
-                    id: 'dimensions',
-                    title: 'Coherence Analysis',
+                { id: 'background', title: 'The Case: Meta & Instagram', canProgress: true },
+                { 
+                    id: 'dimensions', 
+                    title: 'Coherence Analysis', 
                     canProgress: () => {
-                        // Check if all 5 dimensions have been analyzed (marked as true or false)
-                        const dimensions = ['BRC', 'KIC', 'CIC', 'ISC', 'TNC'];
-                        return dimensions.every(dim => dimensionAnalysis[dim] !== undefined);
+                        const dims = ['BRC', 'KIC', 'CIC', 'ISC', 'TNC'];
+                        return dims.every(dim => dimensionAnalysis[dim] !== undefined);
                     }
                 },
-                {
-                    id: 'toulmin',
-                    title: 'Build the Argument',
-                    canProgress: () => toulminConstruction.claim.length > 20
+                { 
+                    id: 'toulmin', 
+                    title: 'Build the Argument', 
+                    canProgress: () => toulminConstruction.claim.length > 20 
                 },
-                {
-                    id: 'personal',
-                    title: 'Personal Application',
+                { 
+                    id: 'personal', 
+                    title: 'Personal Application', 
                     canProgress: () => {
-                        // Check if platform selected AND all 5 dimensions rated
-                        const dimensions = ['BRC', 'KIC', 'CIC', 'ISC', 'TNC'];
-                        return personalAssessment.platform && 
-                               dimensions.every(dim => personalAssessment[dim] !== undefined);
+                        const dims = ['BRC', 'KIC', 'CIC', 'ISC', 'TNC'];
+                        return personalAssessment.platform && dims.every(dim => personalAssessment[dim] !== undefined);
                     }
                 },
-                {
-                    id: 'synthesis',
-                    title: 'Synthesis & Implications',
-                    canProgress: true
-                }
+                { id: 'synthesis', title: 'Synthesis & Implications', canProgress: true }
             ];
 
             const canProgressPhase = () => {
                 const phase = phases[currentPhase];
-                console.log('[META CASE] Checking progress for phase:', currentPhase, phase.title);
-                console.log('[META CASE] Current dimensionAnalysis:', dimensionAnalysis);
-                
-                if (typeof phase.canProgress === 'function') {
-                    const result = phase.canProgress();
-                    console.log('[META CASE] Progress check result:', result);
-                    return result;
-                }
-                console.log('[META CASE] Progress check (boolean):', phase.canProgress);
+                if (typeof phase.canProgress === 'function') return phase.canProgress();
                 return phase.canProgress;
             };
 
-            // PHASE 0: BACKGROUND
-            const BackgroundPhase = () => (
+            // RENDER FUNCTIONS (Not Components) TO PRESERVE FOCUS
+            // ---------------------------------------------------
+
+            const renderBackground = () => (
                 <div className="space-y-6">
                     <div className="bg-gradient-to-br from-red-100 to-orange-100 border-2 border-red-400 rounded-lg p-6">
                         <h3 className="text-2xl font-bold text-red-900 mb-4">📱 A Real-World Case You Know</h3>
@@ -2636,27 +2627,8 @@ Educational use permitted. Attribution required.
                             </p>
                         </div>
                     </div>
-
-                    <div className="bg-blue-50 border-l-4 border-blue-500 p-6">
-                        <h4 className="font-bold text-blue-900 mb-2">Why This Case Matters for You</h4>
-                        <p className="text-sm text-gray-700">
-                            Most of you use Instagram, TikTok, or similar platforms daily. You've probably felt the pull to 
-                            "just scroll a bit more" even when you know you should stop. This case study shows you 
-                            <strong> what's actually happening</strong> - not to blame you, but to give you tools to understand 
-                            and defend against coherence extraction.
-                        </p>
-                    </div>
-
                     <div className="bg-purple-50 border-2 border-purple-300 rounded-lg p-6">
                         <h4 className="font-bold text-purple-900 mb-3">The Coherence Framework Applied</h4>
-                        <p className="text-gray-700 mb-3">
-                            Traditional ethics might ask: "Is Instagram morally wrong?" or "Do users consent?"
-                        </p>
-                        <p className="text-gray-700 mb-3">
-                            <strong>Coherence analysis asks:</strong> "Which coherence dimensions does Instagram systematically 
-                            compromise? What happens when those dimensions break down? Can meaningful consent exist when 
-                            the conditions for reflective choice are being degraded?"
-                        </p>
                         <p className="text-gray-700 font-semibold">
                             This is an OS2-level question - we're analyzing how the system affects the conditions under which 
                             ethical reasoning is possible at all.
@@ -2665,236 +2637,266 @@ Educational use permitted. Attribution required.
                 </div>
             );
 
-            // PHASE 1: DIMENSION ANALYSIS
-            const DimensionAnalysisPhase = () => {
-                const dimensions = [
-                    {
-                        id: 'BRC',
-                        name: 'Biological-Regulatory Coherence',
-                        icon: '🫀',
-                        description: 'Emotional regulation, stress management, sleep',
-                        metaCompromises: [
-                            'Sleep disruption from late-night scrolling',
-                            'Chronic stress and anxiety from social comparison',
-                            'Dopamine hijacking through intermittent reinforcement',
-                            'Emotional dysregulation from curated "perfect" lives'
-                        ],
-                        evidence: 'Internal Meta research showed increased anxiety and depression correlated with usage time'
-                    },
-                    {
-                        id: 'CIC',
-                        name: 'Cognitive-Informational Coherence',
-                        icon: '🧠',
-                        description: 'Mental bandwidth, ability to process complexity',
-                        metaCompromises: [
-                            'Attentional hijacking through infinite scroll',
-                            'Cognitive overload from rapid content switching',
-                            'Reduced reflection time',
-                            'Context collapse (everything flattened to feed)'
-                        ],
-                        evidence: 'Algorithm maximizes salience, not meaning - overwhelming cognitive capacity'
-                    },
-                    {
-                        id: 'KIC',
-                        name: 'Kernel Identity Coherence',
-                        icon: '🎭',
-                        description: 'Integrated sense of self',
-                        metaCompromises: [
-                            'Identity tied to engagement metrics (likes, follows)',
-                            'Performative self-presentation required',
-                            'Fragmentation across different audience contexts',
-                            'Self-worth dependent on external validation'
-                        ],
-                        evidence: 'Adolescents reported feeling "alienated from own bodies" despite recognizing harm'
-                    },
-                    {
-                        id: 'TNC',
-                        name: 'Temporal-Narrative Coherence',
-                        icon: '⏳',
-                        description: 'Time horizon, long-term thinking',
-                        metaCompromises: [
-                            'Collapsed to perpetual present',
-                            'Immediate validation outweighs long-term well-being',
-                            'Future consequences cognitively inaccessible',
-                            'Repeated failed intentions to disengage'
-                        ],
-                        evidence: 'Users report knowing it\'s harmful but being unable to stop - TNC collapse'
-                    },
-                    {
-                        id: 'ISC',
-                        name: 'Institutional-Structural Coherence',
-                        icon: '🏛️',
-                        description: 'Supportive vs. extractive institutions',
-                        metaCompromises: [
-                            'Institution rewards engagement regardless of harm',
-                            'Executives punish internal dissent',
-                            'Psychological costs externalized to users',
-                            'Plausible deniability through "user choice" rhetoric'
-                        ],
-                        evidence: 'Frances Haugen testimony revealed executives chose profit over user well-being'
-                    }
+            const renderDimensions = () => {
+                const dims = [
+                    { id: 'BRC', name: 'Biological-Regulatory', icon: '🫀', desc: 'Sleep, stress, regulation', evidence: 'Increased anxiety/depression correlated with use' },
+                    { id: 'CIC', name: 'Cognitive-Informational', icon: '🧠', desc: 'Mental bandwidth, focus', evidence: 'Algorithm maximizes salience over meaning' },
+                    { id: 'KIC', name: 'Kernel Identity', icon: '🎭', desc: 'Integrated self', evidence: 'Alienation from own body/identity' },
+                    { id: 'TNC', name: 'Temporal-Narrative', icon: '⏳', desc: 'Long-term thinking', evidence: 'Users unable to stop despite wanting to' },
+                    { id: 'ISC', name: 'Institutional-Structural', icon: '🏛️', desc: 'Supportive institutions', evidence: 'Executives chose profit over well-being' }
                 ];
 
                 return (
                     <div className="space-y-6">
                         <div className="bg-purple-50 border-2 border-purple-300 rounded-lg p-6">
-                            <h3 className="text-xl font-bold text-purple-900 mb-3">Your Task: Analyze Each Dimension</h3>
-                            <p className="text-gray-700 mb-3">
-                                For each coherence dimension, identify HOW Instagram/Meta compromises it. Click "Analyze" 
-                                on each dimension to see the evidence, then mark it as "Compromised" or "Not Compromised."
-                            </p>
-                            <div className="bg-white rounded-lg p-3 mt-3">
-                                <p className="text-sm font-semibold text-gray-700 mb-2">Progress:</p>
-                                <div className="flex space-x-2">
-                                    {['BRC', 'KIC', 'CIC', 'ISC', 'TNC'].map(dim => (
-                                        <div
-                                            key={dim}
-                                            className={`flex-1 h-2 rounded ${
-                                                dimensionAnalysis[dim] !== undefined
-                                                    ? 'bg-green-500'
-                                                    : 'bg-gray-300'
-                                            }`}
-                                            title={dim}
-                                        />
-                                    ))}
-                                </div>
-                                <p className="text-xs text-gray-600 mt-1">
-                                    {['BRC', 'KIC', 'CIC', 'ISC', 'TNC'].filter(dim => dimensionAnalysis[dim] !== undefined).length} of 5 dimensions analyzed
-                                </p>
-                                
-                                {/* DEBUG INFO */}
-                                <details className="mt-3 text-xs">
-                                    <summary className="cursor-pointer text-blue-600">🐛 Debug Info (click to expand)</summary>
-                                    <div className="mt-2 bg-gray-100 p-2 rounded font-mono">
-                                        <p>Current state:</p>
-                                        <pre className="whitespace-pre-wrap">{JSON.stringify(dimensionAnalysis, null, 2)}</pre>
-                                        <p className="mt-2">Progress check:</p>
-                                        <ul>
-                                            {['BRC', 'KIC', 'CIC', 'ISC', 'TNC'].map(dim => (
-                                                <li key={dim}>
-                                                    {dim}: {dimensionAnalysis[dim] !== undefined ? '✓' : '✗'} 
-                                                    (value: {JSON.stringify(dimensionAnalysis[dim])})
-                                                </li>
-                                            ))}
-                                        </ul>
-                                        <p className="mt-2 font-bold">
-                                            Can progress: {['BRC', 'KIC', 'CIC', 'ISC', 'TNC'].every(dim => dimensionAnalysis[dim] !== undefined) ? 'YES ✓' : 'NO ✗'}
-                                        </p>
-                                    </div>
-                                </details>
-                            </div>
+                            <h3 className="text-xl font-bold text-purple-900 mb-3">Analyze Each Dimension</h3>
+                            <p className="text-gray-700">Identify how Meta compromises these capacities.</p>
                         </div>
-
-                        {dimensions.map(dimension => {
-                            const isAnalyzed = dimensionAnalysis[dimension.id] !== undefined;
-                            const isCompromised = dimensionAnalysis[dimension.id] === true;
+                        {dims.map(d => {
+                            const isAnalyzed = dimensionAnalysis[d.id] !== undefined;
+                            const isCompromised = dimensionAnalysis[d.id] === true;
+                            const isExpanded = dimensionAnalysis[`${d.id}_expanded`];
 
                             return (
-                                <div key={dimension.id} className="bg-white border-2 border-gray-300 rounded-lg p-6">
-                                    <div className="flex items-center justify-between mb-4">
+                                <div key={d.id} className="bg-white border-2 border-gray-300 rounded-lg p-6">
+                                    <div className="flex justify-between items-center mb-4">
                                         <div className="flex items-center space-x-3">
-                                            <span className="text-4xl">{dimension.icon}</span>
+                                            <span className="text-4xl">{d.icon}</span>
                                             <div>
-                                                <h4 className="text-lg font-bold text-gray-900">{dimension.id}: {dimension.name}</h4>
-                                                <p className="text-sm text-gray-600">{dimension.description}</p>
+                                                <h4 className="text-lg font-bold text-gray-900">{d.id}: {d.name}</h4>
+                                                <p className="text-sm text-gray-600">{d.desc}</p>
                                             </div>
                                         </div>
                                         {isAnalyzed && (
-                                            <div className={`px-4 py-2 rounded-lg font-bold ${
-                                                isCompromised ? 'bg-red-100 text-red-900' : 'bg-green-100 text-green-900'
-                                            }`}>
-                                                {isCompromised ? '⚠️ Compromised' : '✓ Intact'}
-                                            </div>
+                                            <span className={`px-3 py-1 rounded font-bold ${isCompromised ? 'bg-red-100 text-red-900' : 'bg-green-100 text-green-900'}`}>
+                                                {isCompromised ? 'Compromised' : 'Intact'}
+                                            </span>
                                         )}
                                     </div>
-
                                     {!isAnalyzed && (
-                                        <button
-                                            onClick={() => {
-                                                // Show the analysis for this dimension
-                                                const newAnalysis = {...dimensionAnalysis};
-                                                newAnalysis[`${dimension.id}_expanded`] = true;
-                                                setDimensionAnalysis(newAnalysis);
-                                            }}
-                                            className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                                        <button 
+                                            onClick={() => setDimensionAnalysis({...dimensionAnalysis, [`${d.id}_expanded`]: true})}
+                                            className="w-full py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
                                         >
-                                            🔍 Analyze This Dimension
+                                            Analyze
                                         </button>
                                     )}
-
-                                    {dimensionAnalysis[`${dimension.id}_expanded`] && (
-                                        <div className="mt-4 space-y-4">
-                                            <div className="bg-red-50 border-l-4 border-red-500 p-4">
-                                                <h5 className="font-bold text-red-900 mb-2">How Meta Compromises {dimension.id}:</h5>
-                                                <ul className="space-y-1 text-sm text-gray-700">
-                                                    {dimension.metaCompromises.map((compromise, i) => (
-                                                        <li key={i}>• {compromise}</li>
-                                                    ))}
-                                                </ul>
+                                    {isExpanded && (
+                                        <div className="space-y-4 animate-in fade-in">
+                                            <div className="bg-blue-50 p-4 rounded border-l-4 border-blue-500">
+                                                <p className="text-sm"><strong>Evidence:</strong> {d.evidence}</p>
                                             </div>
-
-                                            <div className="bg-blue-50 border-l-4 border-blue-500 p-4">
-                                                <h5 className="font-bold text-blue-900 mb-2">Evidence:</h5>
-                                                <p className="text-sm text-gray-700">{dimension.evidence}</p>
-                                            </div>
-
                                             <div className="flex space-x-4">
-                                                <button
-                                                    onClick={() => {
-                                                        console.log('[META CASE] Before update - dimensionAnalysis:', dimensionAnalysis);
-                                                        const newState = {...dimensionAnalysis, [dimension.id]: true};
-                                                        console.log('[META CASE] Setting', dimension.id, 'to true');
-                                                        console.log('[META CASE] New state will be:', newState);
-                                                        setDimensionAnalysis(newState);
-                                                    }}
-                                                    className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700"
-                                                >
-                                                    Mark as Compromised
-                                                </button>
-                                                <button
-                                                    onClick={() => {
-                                                        console.log('[META CASE] Before update - dimensionAnalysis:', dimensionAnalysis);
-                                                        const newState = {...dimensionAnalysis, [dimension.id]: false};
-                                                        console.log('[META CASE] Setting', dimension.id, 'to false');
-                                                        console.log('[META CASE] New state will be:', newState);
-                                                        setDimensionAnalysis(newState);
-                                                    }}
-                                                    className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700"
-                                                >
-                                                    Mark as Intact
-                                                </button>
+                                                <button onClick={() => setDimensionAnalysis({...dimensionAnalysis, [d.id]: true})} className="flex-1 py-2 bg-red-600 text-white rounded">Mark Compromised</button>
+                                                <button onClick={() => setDimensionAnalysis({...dimensionAnalysis, [d.id]: false})} className="flex-1 py-2 bg-green-600 text-white rounded">Mark Intact</button>
                                             </div>
                                         </div>
                                     )}
                                 </div>
                             );
                         })}
-
-                        {(() => {
-                            const dimensions = ['BRC', 'KIC', 'CIC', 'ISC', 'TNC'];
-                            const allAnalyzed = dimensions.every(dim => dimensionAnalysis[dim] !== undefined);
-                            
-                            if (allAnalyzed) {
-                                const compromisedCount = dimensions.filter(dim => dimensionAnalysis[dim] === true).length;
-                                return (
-                                    <div className="bg-green-50 border-2 border-green-400 rounded-lg p-6">
-                                        <h4 className="font-bold text-green-900 mb-2">✓ Analysis Complete</h4>
-                                        <p className="text-sm text-gray-700 mb-3">
-                                            You've analyzed all 5 dimensions. Notice how systematic the extraction is - 
-                                            Meta compromises multiple coherence dimensions simultaneously.
-                                        </p>
-                                        <p className="text-sm text-gray-700 font-semibold">
-                                            Summary: {compromisedCount} of 5 dimensions identified as compromised.
-                                        </p>
-                                    </div>
-                                );
-                            }
-                            return null;
-                        })()}
                     </div>
                 );
             };
 
+            const renderToulmin = () => {
+                const showExtra = toulminConstruction.claim.length > 20;
+                return (
+                    <div className="space-y-6">
+                        <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-6">
+                            <h3 className="text-xl font-bold text-blue-900 mb-2">Build Meta's Argument</h3>
+                            <p className="text-gray-700">Meta never said "extraction is good," but their actions imply an argument. Reconstruct it.</p>
+                        </div>
+                        
+                        <div className="bg-white border-2 border-blue-300 rounded-lg p-6">
+                            <h4 className="font-bold text-blue-900 mb-2">📍 CLAIM (Implicit)</h4>
+                            <p className="text-xs text-gray-500 mb-2">Example: "It is ethically permissible to maximize engagement..."</p>
+                            <textarea 
+                                className="w-full p-3 border rounded focus:ring-2 focus:ring-blue-500"
+                                rows="3"
+                                value={toulminConstruction.claim}
+                                onChange={(e) => setToulminConstruction({...toulminConstruction, claim: e.target.value})}
+                                placeholder="Type the implicit claim here..."
+                            />
+                        </div>
+
+                        <div style={{ opacity: showExtra ? 1 : 0.5, pointerEvents: showExtra ? 'auto' : 'none' }} className="transition-opacity">
+                            <div className="bg-white border-2 border-green-300 rounded-lg p-6 mt-4">
+                                <h4 className="font-bold text-green-900 mb-2">🔍 GROUNDS (Evidence)</h4>
+                                <div className="space-y-2">
+                                    {['Users voluntarily sign up', 'Terms of service are public', 'Platform provides value/connection'].map(g => (
+                                        <label key={g} className="flex items-center space-x-2">
+                                            <input 
+                                                type="checkbox" 
+                                                checked={toulminConstruction.grounds.includes(g)}
+                                                onChange={(e) => {
+                                                    const newG = e.target.checked 
+                                                        ? [...toulminConstruction.grounds, g] 
+                                                        : toulminConstruction.grounds.filter(x => x !== g);
+                                                    setToulminConstruction({...toulminConstruction, grounds: newG});
+                                                }}
+                                            />
+                                            <span>{g}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            
+                            <div className="bg-white border-2 border-purple-300 rounded-lg p-6 mt-4">
+                                <h4 className="font-bold text-purple-900 mb-2">🔗 WARRANT (Logic)</h4>
+                                <textarea 
+                                    className="w-full p-3 border rounded"
+                                    rows="2"
+                                    placeholder="e.g., If users choose it, it's permissible..."
+                                    value={toulminConstruction.warrant}
+                                    onChange={(e) => setToulminConstruction({...toulminConstruction, warrant: e.target.value})}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            const renderPersonal = () => (
+                <div className="space-y-6">
+                    <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-6">
+                        <h3 className="text-xl font-bold text-yellow-900">Assess YOUR Coherence</h3>
+                        <p className="text-gray-700">Select your main platform and rate its impact on you.</p>
+                    </div>
+                    <div className="bg-white p-6 border rounded-lg">
+                        <h4 className="font-bold mb-3">Select Platform:</h4>
+                        <div className="flex flex-wrap gap-2">
+                            {['Instagram', 'TikTok', 'X/Twitter', 'Snapchat'].map(p => (
+                                <button
+                                    key={p}
+                                    onClick={() => setPersonalAssessment({...personalAssessment, platform: p})}
+                                    className={`px-4 py-2 rounded border ${personalAssessment.platform === p ? 'bg-purple-600 text-white' : 'bg-gray-100'}`}
+                                >
+                                    {p}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    {personalAssessment.platform && (
+                        <div className="space-y-4">
+                            {['BRC', 'CIC', 'KIC', 'TNC', 'ISC'].map(dim => (
+                                <div key={dim} className="bg-gray-50 p-4 rounded border">
+                                    <div className="flex justify-between mb-2">
+                                        <span className="font-bold">{dim}</span>
+                                        <span className="font-bold text-purple-600">{personalAssessment[dim]}</span>
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        <span className="text-xs">Preserves</span>
+                                        <input 
+                                            type="range" min="1" max="5" 
+                                            value={personalAssessment[dim]}
+                                            onChange={(e) => setPersonalAssessment({...personalAssessment, [dim]: parseInt(e.target.value)})}
+                                            className="flex-1"
+                                        />
+                                        <span className="text-xs">Compromises</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            );
+
+            const renderSynthesis = () => (
+                <div className="space-y-6">
+                    <div className="bg-gradient-to-br from-purple-100 to-blue-100 border-2 border-purple-400 rounded-lg p-6">
+                        <h3 className="text-2xl font-bold text-purple-900 mb-4">Targeting Coherence</h3>
+                        <ul className="list-disc pl-5 space-y-2 text-gray-800">
+                            <li><strong>Systematic Extraction:</strong> Meta compromised all 5 dimensions.</li>
+                            <li><strong>The "Voluntary" Trap:</strong> You cannot meaningfully consent with compromised coherence.</li>
+                            <li><strong>Structural Issue:</strong> This is a design problem, not a user weakness.</li>
+                        </ul>
+                    </div>
+                    <button 
+                        onClick={() => setShowBiologicalAnalogue(!showBiologicalAnalogue)}
+                        className="w-full py-3 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                    >
+                        {showBiologicalAnalogue ? 'Hide' : 'Show'} Advanced Biological Analogue
+                    </button>
+                    {showBiologicalAnalogue && (
+                        <div className="bg-indigo-50 p-4 rounded border-l-4 border-indigo-600">
+                            <h4 className="font-bold text-indigo-900">Agency Hijacking in Nature</h4>
+                            <p className="text-sm mt-2">Just as the Horsehair worm reprograms a cricket's valuation system to seek water (suicide for the cricket, reproduction for the worm), social media reprograms human valuation systems (dopamine/validation) to seek engagement (harm for the user, profit for the platform).</p>
+                        </div>
+                    )}
+                </div>
+            );
+
+            // MAIN RENDER
+            return (
+                <div className="bg-white rounded-lg shadow-lg p-8">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-4">Case Study: Meta & Coherence Extraction</h2>
+                    
+                    {/* Phase Navigation Tabs */}
+                    <div className="flex space-x-2 mb-6 overflow-x-auto pb-2">
+                        {phases.map((phase, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => currentPhase > idx && setCurrentPhase(idx)}
+                                disabled={currentPhase < idx}
+                                className={`flex-1 px-3 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors ${
+                                    currentPhase === idx 
+                                        ? 'bg-purple-600 text-white' 
+                                        : currentPhase > idx
+                                        ? 'bg-green-100 text-green-800'
+                                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                }`}
+                            >
+                                {currentPhase > idx && '✓ '} {phase.title}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Content Body - Using Render Functions */}
+                    <div className="mb-8 min-h-[400px]">
+                        {currentPhase === 0 && renderBackground()}
+                        {currentPhase === 1 && renderDimensions()}
+                        {currentPhase === 2 && renderToulmin()}
+                        {currentPhase === 3 && renderPersonal()}
+                        {currentPhase === 4 && renderSynthesis()}
+                    </div>
+
+                    {/* Footer Navigation */}
+                    <div className="flex justify-between pt-4 border-t">
+                        <button
+                            onClick={() => setCurrentPhase(Math.max(0, currentPhase - 1))}
+                            disabled={currentPhase === 0}
+                            className={`px-6 py-2 rounded-lg font-semibold ${
+                                currentPhase === 0 ? 'bg-gray-200 text-gray-400' : 'bg-gray-300 hover:bg-gray-400'
+                            }`}
+                        >
+                            ← Previous
+                        </button>
+                        
+                        {currentPhase < phases.length - 1 ? (
+                            <button
+                                onClick={() => setCurrentPhase(currentPhase + 1)}
+                                disabled={!canProgressPhase()}
+                                className={`px-6 py-2 rounded-lg font-semibold ${
+                                    canProgressPhase()
+                                        ? 'bg-purple-600 text-white hover:bg-purple-700'
+                                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                }`}
+                            >
+                                Next →
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => { onComplete(); onNext(); }}
+                                className="px-6 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                            >
+                                Continue to Next Module →
+                            </button>
+                        )}
+                    </div>
+                </div>
+            );
+        }
             // PHASE 2: TOULMIN CONSTRUCTION
             const ToulminPhase = () => {
                 const showAdditionalFields = toulminConstruction.claim.length > 20;
