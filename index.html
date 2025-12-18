@@ -2293,7 +2293,7 @@ Educational use permitted. Attribution required.
             );
         }
 
-        // META CASE STUDY SECTION - COHERENCE EXTRACTION AT SCALE
+ // META CASE STUDY SECTION - COHERENCE EXTRACTION AT SCALE
         function MetaCaseSection({ onComplete, onNext }) {
             const [currentPhase, setCurrentPhase] = useState(0);
             const [dimensionAnalysis, setDimensionAnalysis] = useState({});
@@ -2304,7 +2304,11 @@ Educational use permitted. Attribution required.
                 backing: '',
                 rebuttals: []
             });
-            const [personalAssessment, setPersonalAssessment] = useState({});
+            // FIX: Initialize with default values of 3 to match the visual sliders
+            // This prevents navigation lock if user accepts the default "3" rating
+            const [personalAssessment, setPersonalAssessment] = useState({
+                BRC: 3, KIC: 3, CIC: 3, ISC: 3, TNC: 3
+            });
             const [showBiologicalAnalogue, setShowBiologicalAnalogue] = useState(false);
 
             const phases = [
@@ -2800,7 +2804,7 @@ Educational use permitted. Attribution required.
                         {(() => {
                             const dimensions = ['BRC', 'CIC', 'KIC', 'TNC', 'ISC'];
                             const allRated = personalAssessment.platform && 
-                                           dimensions.every(dim => personalAssessment[dim] !== undefined);
+                                             dimensions.every(dim => personalAssessment[dim] !== undefined);
                             
                             if (allRated) {
                                 const avgScore = dimensions.reduce((sum, dim) => sum + personalAssessment[dim], 0) / 5;
