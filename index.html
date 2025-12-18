@@ -1258,525 +1258,776 @@ Educational use permitted. Attribution required.
                                 />
                             )}
                             {currentSection === 'metaCase' && (
-                                <MetaCaseSection 
-                                    onComplete={() => completeSection('metaCase')}
-                                    onNext={() => navigateToSection('toulminCoherence')}
-                                />
-                            )}
-                            {currentSection === 'toulminCoherence' && (
-                                <ToulminCoherenceSection 
-                                    onComplete={() => completeSection('toulminCoherence')}
-                                    onNext={() => navigateToSection('modeling')}
-                                />
-                            )}
-                            {currentSection === 'modeling' && (
-                                <ModelingSection 
-                                    studentModels={studentModels}
-                                    setStudentModels={setStudentModels}
-                                    onComplete={() => completeSection('modeling')}
-                                    onNext={() => navigateToSection('argumentAnalysis')}
-                                />
-                            )}
-                            {currentSection === 'argumentAnalysis' && (
-                                <ArgumentAnalysisSection 
-                                    philosophers={PHILOSOPHERS} 
-                                    onComplete={() => completeSection('argumentAnalysis')} 
-                                    onNext={() => navigateToSection('synthesis')} 
-                                />
-                            )}
-                            {currentSection === 'synthesis' && (
-                                <SynthesisSection 
-                                    studentInfo={studentInfo}
-                                    sessionData={sessionData}
-                                    sectionProgress={sectionProgress}
-                                    studentModels={studentModels}
-                                    onComplete={() => completeSection('synthesis')}
-                                />
-                            )}
-                        </div>
-                    </main>
-                </div>
-            );
-        }
+                                // ============================================================================
+        // META CASE STUDY - EXTRACTED COMPONENTS (FIX FOR INPUT FOCUS BUG)
+        // ============================================================================
 
-        // Welcome Screen - INFORMATION AGE REBRANDING
-        function WelcomeScreen({ onStart }) {
-            const [formData, setFormData] = useState({ name: '', email: '', course: '' });
-
-            const handleSubmit = (e) => {
-                e.preventDefault();
-                if (formData.name && formData.email && formData.course) {
-                    onStart(formData);
-                }
-            };
-
-            return (
-                <div className="min-h-screen gradient-bg py-12 px-4">
-                    <div className="max-w-4xl mx-auto">
-                        <div className="bg-white rounded-lg shadow-2xl p-8 mb-6">
-                            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                                Ethical Reasoning for the Information Age
-                            </h1>
-                            <p className="text-2xl text-purple-700 font-semibold mb-6">
-                                The Toulmin Tool: Analyzing Arguments Across Difference
-                            </p>
-
-                            <div className="bg-gradient-to-br from-blue-50 to-purple-50 border-l-4 border-purple-500 p-6 mb-6">
-                                <h3 className="text-xl font-semibold text-purple-900 mb-3">Information Age Coordination Challenges</h3>
-                                <p className="text-gray-700 mb-3">
-                                    We live in a world where:
-                                </p>
-                                <ul className="space-y-2 text-gray-700">
-                                    <li>• <strong>Algorithms shape what we see</strong> - content filters determine whose voices reach us</li>
-                                    <li>• <strong>Communities span continents</strong> - coordinating across vast distances and differences</li>
-                                    <li>• <strong>Institutional filters determine whose knowledge counts</strong> - gatekeeping at scale</li>
-                                    <li>• <strong>Ethical frameworks collide</strong> - diverse traditions meet in digital spaces</li>
-                                </ul>
-                                <p className="text-gray-700 mt-3">
-                                    How do we reason ethically when standpoints differ radically and coordination happens through mediated networks?
-                                </p>
-                            </div>
-
-                            <div className="bg-blue-50 border-l-4 border-blue-500 p-6 mb-6">
-                                <h3 className="text-xl font-semibold text-blue-900 mb-2">What This Tool Provides</h3>
-                                <p className="text-gray-700">
-                                    A systematic method for analyzing ethical arguments that reveals:
-                                </p>
-                                <ul className="mt-3 space-y-2 text-gray-700">
-                                    <li>• How standpoint shapes what's visible about ethical reality</li>
-                                    <li>• When arguments work and when they fail (scope conditions)</li>
-                                    <li>• What institutional structures enable or prevent ethical reasoning</li>
-                                    <li>• How to build bridges across different ethical frameworks</li>
-                                </ul>
-                            </div>
-
-                            <div className="bg-green-50 border-l-4 border-green-500 p-6 mb-6">
-                                <h4 className="text-lg font-semibold text-green-900 mb-2">Toulmin Analysis + Coherence Framework</h4>
-                                <p className="text-gray-700">
-                                    You'll learn to map ethical arguments (Toulmin's 6 components) AND analyze the coherence 
-                                    conditions required for those arguments to be accessible. This reveals why philosophers 
-                                    disagree—not because they're wrong, but because they're seeing different patterns from 
-                                    different positions.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-lg shadow-2xl p-8">
-                            <h3 className="text-2xl font-bold text-gray-900 mb-4">Student Information</h3>
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                <div>
-                                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                                        Full Name *
-                                    </label>
-                                    <input
-                                        id="name"
-                                        type="text"
-                                        required
-                                        aria-required="true"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                                        value={formData.name}
-                                        onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                                        Email *
-                                    </label>
-                                    <input
-                                        id="email"
-                                        type="email"
-                                        required
-                                        aria-required="true"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                                        value={formData.email}
-                                        onChange={(e) => setFormData({...formData, email: e.target.value})}
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="course" className="block text-sm font-medium text-gray-700 mb-2">
-                                        Course *
-                                    </label>
-                                    <input
-                                        id="course"
-                                        type="text"
-                                        required
-                                        aria-required="true"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                                        value={formData.course}
-                                        onChange={(e) => setFormData({...formData, course: e.target.value})}
-                                    />
-                                </div>
-                                <button
-                                    type="submit"
-                                    className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors focus:ring-4 focus:ring-purple-300"
-                                >
-                                    Begin Toulmin Tool →
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
-        // Section Components
-        function IntroSection({ onComplete, onNext }) {
-            useEffect(() => { onComplete(); }, []);
-
-            return (
-                <div className="bg-white rounded-lg shadow-lg p-8">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                        Why Analyze Philosophical Arguments in the Information Age?
-                    </h2>
-                    
-                    <p className="text-xl text-gray-700 mb-6">
-                        Philosophy isn't a museum of dead ideas—it's a living record of how humans have tried to 
-                        understand ethical coordination from different standpoints across time and culture.
+        // Phase 0: Background
+        const MetaBackgroundPhase = () => (
+            <div className="space-y-6">
+                <div className="bg-gradient-to-br from-red-100 to-orange-100 border-2 border-red-400 rounded-lg p-6">
+                    <h3 className="text-2xl font-bold text-red-900 mb-4">📱 A Real-World Case You Know</h3>
+                    <p className="text-gray-700 mb-4">
+                        In 2021, whistleblower <strong>Frances Haugen</strong> testified before the U.S. Congress, revealing 
+                        Meta's (Facebook/Instagram) internal research showing that:
                     </p>
-
-                    <div className="bg-gradient-to-br from-blue-100 to-purple-100 border-2 border-purple-300 p-6 rounded-lg mb-6">
-                        <h3 className="text-xl font-semibold text-purple-900 mb-3">The Core Insight</h3>
-                        <p className="text-gray-700 mb-3">
-                            What you can see about ethics depends on where you stand in social, historical, and material reality.
-                        </p>
-                        <ul className="space-y-2 text-gray-700">
-                            <li>• Different standpoints reveal different aspects of ethical reality</li>
-                            <li>• The same person in different contexts will notice different things</li>
-                            <li>• Gates (institutional filters) determine whose knowledge counts</li>
-                            <li>• Meta-constructors (review systems) allow adaptation over time</li>
-                        </ul>
-                    </div>
-
-                    <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-6">
-                        <h3 className="text-lg font-bold text-yellow-900 mb-2">Information Age Context</h3>
-                        <p className="text-gray-700">
-                            When ethical arguments travel through algorithmic filters, across cultural boundaries, and through 
-                            institutional gatekeepers, understanding HOW arguments work—and for whom—becomes essential for 
-                            ethical coordination at scale.
+                    <ul className="space-y-2 text-gray-700 mb-4">
+                        <li>• <strong>Instagram worsened body image issues, anxiety, depression, and self-harm risk</strong> for adolescent girls</li>
+                        <li>• These harms were <strong>mechanistically linked to engagement-maximizing features</strong></li>
+                        <li>• <strong>Executives knew</strong> but chose not to implement changes (citing reduced engagement/profit)</li>
+                    </ul>
+                    <div className="bg-white border-l-4 border-red-600 p-4 rounded">
+                        <p className="text-sm text-gray-800 font-semibold">
+                            The Ethical Question: Was Meta's behavior ethically permissible given that users 
+                            voluntarily chose to engage with its platforms, even when the company knew its 
+                            systems were degrading users' psychological well-being?
                         </p>
                     </div>
-
-                    <button
-                        onClick={onNext}
-                        className="w-full px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors focus:ring-4 focus:ring-purple-300"
-                    >
-                        Continue to OS1/OS2 Framework →
-                    </button>
                 </div>
-            );
-        }
 
-        // COHERENCE SECTION - NEW FOR PHASE 2
-        function CoherenceSection({ onComplete, onNext }) {
-            const [expandedDimension, setExpandedDimension] = useState(null);
-            const [exploredDimensions, setExploredDimensions] = useState(new Set());
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-6">
+                    <h4 className="font-bold text-blue-900 mb-2">Why This Case Matters for You</h4>
+                    <p className="text-sm text-gray-700">
+                        Most of you use Instagram, TikTok, or similar platforms daily. You've probably felt the pull to 
+                        "just scroll a bit more" even when you know you should stop. This case study shows you 
+                        <strong> what's actually happening</strong> - not to blame you, but to give you tools to understand 
+                        and defend against coherence extraction.
+                    </p>
+                </div>
 
+                <div className="bg-purple-50 border-2 border-purple-300 rounded-lg p-6">
+                    <h4 className="font-bold text-purple-900 mb-3">The Coherence Framework Applied</h4>
+                    <p className="text-gray-700 mb-3">
+                        Traditional ethics might ask: "Is Instagram morally wrong?" or "Do users consent?"
+                    </p>
+                    <p className="text-gray-700 mb-3">
+                        <strong>Coherence analysis asks:</strong> "Which coherence dimensions does Instagram systematically 
+                        compromise? What happens when those dimensions break down? Can meaningful consent exist when 
+                        the conditions for reflective choice are being degraded?"
+                    </p>
+                    <p className="text-gray-700 font-semibold">
+                        This is an OS2-level question - we're analyzing how the system affects the conditions under which 
+                        ethical reasoning is possible at all.
+                    </p>
+                </div>
+            </div>
+        );
+
+        // Phase 1: Dimension Analysis
+        const MetaDimensionPhase = ({ dimensionAnalysis, setDimensionAnalysis }) => {
             const dimensions = [
                 {
                     id: 'BRC',
                     name: 'Biological-Regulatory Coherence',
-                    color: 'orange',
                     icon: '🫀',
-                    shortDesc: 'Emotional regulation and stress management',
-                    fullDesc: 'Your capacity to regulate emotions, manage stress, and maintain physiological stability. When overwhelmed, your prefrontal cortex literally can\'t do complex ethical reasoning.',
-                    examples: [
-                        'Sleep deprivation makes moral judgment deteriorate',
-                        'Chronic stress narrows attention and reduces nuance',
-                        'Panic states prevent deliberative thinking',
-                        'Hunger and physical pain compromise decision-making'
+                    description: 'Emotional regulation, stress management, sleep',
+                    metaCompromises: [
+                        'Sleep disruption from late-night scrolling',
+                        'Chronic stress and anxiety from social comparison',
+                        'Dopamine hijacking through intermittent reinforcement',
+                        'Emotional dysregulation from curated "perfect" lives'
                     ],
-                    breakdown: 'When BRC breaks: panic, rigidity, emotional flooding, fight-flight-freeze responses dominate',
-                    philosopherNote: 'Aristotle: doctrine of the mean. Emotions must be educated and regulated for virtue to function.'
-                },
-                {
-                    id: 'KIC',
-                    name: 'Kernel Identity Coherence',
-                    color: 'blue',
-                    icon: '🎭',
-                    shortDesc: 'Integrated sense of self across contexts',
-                    fullDesc: 'Your ability to maintain a coherent identity across different roles and contexts. Fragmentation means being different people in different places, unable to develop settled character.',
-                    examples: [
-                        'Being authentic at work vs. compartmentalized',
-                        'Values consistent across relationships',
-                        'Not requiring different masks in different spaces',
-                        'Settled character that persists across time'
-                    ],
-                    breakdown: 'When KIC breaks: compartmentalization, "different person at work/home," moral distress from value conflicts',
-                    philosopherNote: 'Aristotle: virtue as settled disposition. Confucius: relational roles integrate into coherent self.'
+                    evidence: 'Internal Meta research showed increased anxiety and depression correlated with usage time'
                 },
                 {
                     id: 'CIC',
                     name: 'Cognitive-Informational Coherence',
-                    color: 'yellow',
                     icon: '🧠',
-                    shortDesc: 'Capacity for complex reasoning',
-                    fullDesc: 'Your ability to process complex information, hold multiple perspectives, avoid contradictions, and exercise practical judgment. Overload means black-and-white thinking.',
-                    examples: [
-                        'Working memory under cognitive load',
-                        'Ability to see nuance vs. binary thinking',
-                        'Holding multiple considerations simultaneously',
-                        'Pattern recognition and practical wisdom'
+                    description: 'Mental bandwidth, ability to process complexity',
+                    metaCompromises: [
+                        'Attentional hijacking through infinite scroll',
+                        'Cognitive overload from rapid content switching',
+                        'Reduced reflection time',
+                        'Context collapse (everything flattened to feed)'
                     ],
-                    breakdown: 'When CIC breaks: binary thinking, can\'t process complexity, contradictions proliferate',
-                    philosopherNote: 'Kant: requires full rational capacity. Aristotle: phronesis needs cognitive bandwidth for context-sensitive judgment.'
+                    evidence: 'Algorithm maximizes salience, not meaning - overwhelming cognitive capacity'
                 },
                 {
-                    id: 'ISC',
-                    name: 'Institutional-Structural Coherence',
-                    color: 'green',
-                    icon: '🏛️',
-                    shortDesc: 'Institutions that support vs. punish ethics',
-                    fullDesc: 'Whether the institutions you\'re embedded in support ethical action or punish it. Bad structures create double-binds where all choices feel wrong.',
-                    examples: [
-                        'Workplace that rewards integrity vs. exploitation',
-                        'Healthcare system that allows proper care',
-                        'Educational structures supporting learning',
-                        'Communities that enable virtue development'
+                    id: 'KIC',
+                    name: 'Kernel Identity Coherence',
+                    icon: '🎭',
+                    description: 'Integrated sense of self',
+                    metaCompromises: [
+                        'Identity tied to engagement metrics (likes, follows)',
+                        'Performative self-presentation required',
+                        'Fragmentation across different audience contexts',
+                        'Self-worth dependent on external validation'
                     ],
-                    breakdown: 'When ISC breaks: moral double-binds, "damned if you do, damned if you don\'t," institutional betrayal',
-                    philosopherNote: 'Aristotle: requires the polis. Maathai: institutional structures determine whose knowledge counts.'
+                    evidence: 'Adolescents reported feeling "alienated from own bodies" despite recognizing harm'
                 },
                 {
                     id: 'TNC',
                     name: 'Temporal-Narrative Coherence',
-                    color: 'purple',
                     icon: '⏳',
-                    shortDesc: 'Connection across time and commitment',
-                    fullDesc: 'Your ability to connect past, present, and future into a coherent narrative and maintain long-term commitments. Short-termism means ethical frameworks requiring patience become inaccessible.',
-                    examples: [
-                        'Seeing life as whole trajectory vs. isolated moments',
-                        'Maintaining commitments across years',
-                        'Learning from past and planning for future',
-                        'Addiction collapses time horizon to "now"'
+                    description: 'Time horizon, long-term thinking',
+                    metaCompromises: [
+                        'Collapsed to perpetual present',
+                        'Immediate validation outweighs long-term well-being',
+                        'Future consequences cognitively inaccessible',
+                        'Repeated failed intentions to disengage'
                     ],
-                    breakdown: 'When TNC breaks: short-termism, "only today matters," inability to develop character over time',
-                    philosopherNote: 'Aristotle: requires complete life perspective. Virtue develops across decades, not moments.'
+                    evidence: 'Users report knowing it\'s harmful but being unable to stop - TNC collapse'
+                },
+                {
+                    id: 'ISC',
+                    name: 'Institutional-Structural Coherence',
+                    icon: '🏛️',
+                    description: 'Supportive vs. extractive institutions',
+                    metaCompromises: [
+                        'Institution rewards engagement regardless of harm',
+                        'Executives punish internal dissent',
+                        'Psychological costs externalized to users',
+                        'Plausible deniability through "user choice" rhetoric'
+                    ],
+                    evidence: 'Frances Haugen testimony revealed executives chose profit over user well-being'
                 }
             ];
 
-            const allExplored = dimensions.every(d => exploredDimensions.has(d.id));
-
             return (
-                <div className="bg-white rounded-lg shadow-lg p-8">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                        The Five Coherence Dimensions
-                    </h2>
-                    
-                    <p className="text-xl text-gray-700 mb-6">
-                        Ethics isn't just about knowing right from wrong—it requires five distinct capacities working together. 
-                        When any of these break down, ethical reasoning becomes difficult or impossible.
-                    </p>
-
-                    <div className="bg-blue-50 border-l-4 border-blue-500 p-6 mb-6">
-                        <h3 className="font-bold text-blue-900 mb-2">Key Insight</h3>
-                        <p className="text-gray-700">
-                            Different ethical frameworks require different coherence conditions. Understanding these helps you see:
+                <div className="space-y-6">
+                    <div className="bg-purple-50 border-2 border-purple-300 rounded-lg p-6">
+                        <h3 className="text-xl font-bold text-purple-900 mb-3">Your Task: Analyze Each Dimension</h3>
+                        <p className="text-gray-700 mb-3">
+                            For each coherence dimension, identify HOW Instagram/Meta compromises it. Click "Analyze" 
+                            on each dimension to see the evidence, then mark it as "Compromised" or "Not Compromised."
                         </p>
-                        <ul className="mt-2 space-y-1 text-gray-700">
-                            <li>• When an ethical framework will work for YOU</li>
-                            <li>• What conditions need protection to maintain ethical capacity</li>
-                            <li>• Why philosophers disagree (they're tracking different breakdowns)</li>
-                        </ul>
+                        <div className="bg-white rounded-lg p-3 mt-3">
+                            <p className="text-sm font-semibold text-gray-700 mb-2">Progress:</p>
+                            <div className="flex space-x-2">
+                                {['BRC', 'KIC', 'CIC', 'ISC', 'TNC'].map(dim => (
+                                    <div
+                                        key={dim}
+                                        className={`flex-1 h-2 rounded ${
+                                            dimensionAnalysis[dim] !== undefined
+                                                ? 'bg-green-500'
+                                                : 'bg-gray-300'
+                                        }`}
+                                        title={dim}
+                                    />
+                                ))}
+                            </div>
+                            <p className="text-xs text-gray-600 mt-1">
+                                {['BRC', 'KIC', 'CIC', 'ISC', 'TNC'].filter(dim => dimensionAnalysis[dim] !== undefined).length} of 5 dimensions analyzed
+                            </p>
+                        </div>
                     </div>
 
-                    <div className="bg-gray-100 border-2 border-gray-400 rounded-lg p-4 mb-6">
-                        <p className="text-sm font-semibold text-gray-700">
-                            Progress: {exploredDimensions.size} of {dimensions.length} dimensions explored
-                            {allExplored && " ✓ All explored!"}
-                        </p>
-                    </div>
+                    {dimensions.map(dimension => {
+                        const isAnalyzed = dimensionAnalysis[dimension.id] !== undefined;
+                        const isCompromised = dimensionAnalysis[dimension.id] === true;
 
-                    <div className="space-y-4 mb-8">
-                        {dimensions.map(dimension => {
-                            const isExpanded = expandedDimension === dimension.id;
-                            const isExplored = exploredDimensions.has(dimension.id);
-                            const colorClasses = {
-                                orange: 'bg-orange-50 border-orange-300 text-orange-900',
-                                blue: 'bg-blue-50 border-blue-300 text-blue-900',
-                                yellow: 'bg-yellow-50 border-yellow-300 text-yellow-900',
-                                green: 'bg-green-50 border-green-300 text-green-900',
-                                purple: 'bg-purple-50 border-purple-300 text-purple-900'
-                            };
-
-                            return (
-                                <div key={dimension.id} className={`border-2 rounded-lg overflow-hidden ${isExplored ? 'border-green-400' : ''}`}>
-                                    <button
-                                        onClick={() => {
-                                            setExpandedDimension(isExpanded ? null : dimension.id);
-                                            setExploredDimensions(new Set([...exploredDimensions, dimension.id]));
-                                        }}
-                                        className={`w-full text-left p-6 ${colorClasses[dimension.color]} hover:opacity-90 transition-all`}
-                                    >
-                                        <div className="flex justify-between items-center">
-                                            <div className="flex items-center space-x-4">
-                                                <span className="text-4xl" aria-hidden="true">{dimension.icon}</span>
-                                                <div>
-                                                    <h3 className="text-xl font-bold">{dimension.id}: {dimension.name}</h3>
-                                                    <p className="text-sm mt-1">{dimension.shortDesc}</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center space-x-3">
-                                                {isExplored && <span className="text-green-600 font-bold">✓</span>}
-                                                <span className="text-2xl">{isExpanded ? '▼' : '▶'}</span>
-                                            </div>
+                        return (
+                            <div key={dimension.id} className="bg-white border-2 border-gray-300 rounded-lg p-6">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex items-center space-x-3">
+                                        <span className="text-4xl">{dimension.icon}</span>
+                                        <div>
+                                            <h4 className="text-lg font-bold text-gray-900">{dimension.id}: {dimension.name}</h4>
+                                            <p className="text-sm text-gray-600">{dimension.description}</p>
                                         </div>
-                                    </button>
-
-                                    {isExpanded && (
-                                        <div className="p-6 bg-white border-t-2">
-                                            <p className="text-gray-700 mb-4 font-semibold">{dimension.fullDesc}</p>
-                                            
-                                            <div className="mb-4">
-                                                <h4 className="font-bold text-gray-900 mb-2">Examples:</h4>
-                                                <ul className="space-y-1 text-gray-700">
-                                                    {dimension.examples.map((ex, i) => (
-                                                        <li key={i}>• {ex}</li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-
-                                            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-                                                <h4 className="font-bold text-red-900 mb-1">When It Breaks Down:</h4>
-                                                <p className="text-sm text-gray-700">{dimension.breakdown}</p>
-                                            </div>
-
-                                            <div className="bg-indigo-50 border-l-4 border-indigo-500 p-4">
-                                                <h4 className="font-bold text-indigo-900 mb-1">Philosopher Connection:</h4>
-                                                <p className="text-sm text-gray-700">{dimension.philosopherNote}</p>
-                                            </div>
+                                    </div>
+                                    {isAnalyzed && (
+                                        <div className={`px-4 py-2 rounded-lg font-bold ${
+                                            isCompromised ? 'bg-red-100 text-red-900' : 'bg-green-100 text-green-900'
+                                        }`}>
+                                            {isCompromised ? '⚠️ Compromised' : '✓ Intact'}
                                         </div>
                                     )}
                                 </div>
-                            );
-                        })}
-                    </div>
 
-                    {allExplored ? (
-                        <button
-                            onClick={() => { onComplete(); onNext(); }}
-                            className="w-full px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors"
-                        >
-                            Continue to FAIM-QIRF Notation →
-                        </button>
-                    ) : (
-                        <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4">
-                            <p className="text-sm text-gray-700">
-                                Explore all {dimensions.length} dimensions to continue. Click each one to expand and learn more.
-                            </p>
-                        </div>
-                    )}
+                                {!isAnalyzed && (
+                                    <button
+                                        onClick={() => {
+                                            const newAnalysis = {...dimensionAnalysis};
+                                            newAnalysis[`${dimension.id}_expanded`] = true;
+                                            setDimensionAnalysis(newAnalysis);
+                                        }}
+                                        className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                                    >
+                                        🔍 Analyze This Dimension
+                                    </button>
+                                )}
+
+                                {dimensionAnalysis[`${dimension.id}_expanded`] && (
+                                    <div className="mt-4 space-y-4">
+                                        <div className="bg-red-50 border-l-4 border-red-500 p-4">
+                                            <h5 className="font-bold text-red-900 mb-2">How Meta Compromises {dimension.id}:</h5>
+                                            <ul className="space-y-1 text-sm text-gray-700">
+                                                {dimension.metaCompromises.map((compromise, i) => (
+                                                    <li key={i}>• {compromise}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+
+                                        <div className="bg-blue-50 border-l-4 border-blue-500 p-4">
+                                            <h5 className="font-bold text-blue-900 mb-2">Evidence:</h5>
+                                            <p className="text-sm text-gray-700">{dimension.evidence}</p>
+                                        </div>
+
+                                        <div className="flex space-x-4">
+                                            <button
+                                                onClick={() => setDimensionAnalysis({...dimensionAnalysis, [dimension.id]: true})}
+                                                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700"
+                                            >
+                                                Mark as Compromised
+                                            </button>
+                                            <button
+                                                onClick={() => setDimensionAnalysis({...dimensionAnalysis, [dimension.id]: false})}
+                                                className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700"
+                                            >
+                                                Mark as Intact
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
                 </div>
             );
-        }
+        };
 
-        function OS1OS2Section({ onComplete, onNext }) {
-            const [expanded, setExpanded] = useState(null);
+        // Phase 2: Toulmin Construction
+        const MetaToulminPhase = ({ toulminConstruction, setToulminConstruction }) => {
+            const showAdditionalFields = toulminConstruction.claim.length > 20;
+            
+            return (
+                <div className="space-y-6">
+                    <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-6">
+                        <h3 className="text-xl font-bold text-blue-900 mb-3">Build Meta's Implicit Ethical Argument</h3>
+                        <p className="text-gray-700 mb-3">
+                            Meta never explicitly stated: "It's ethical to extract users' coherence for profit." 
+                            But their actions implied an argument. Let's reconstruct it using Toulmin's framework.
+                        </p>
+                        <p className="text-sm text-gray-600">
+                            Think about what Meta would need to claim, and what grounds/warrants would support that claim.
+                        </p>
+                    </div>
+
+                    <div className="space-y-4">
+                        <div className="bg-white border-2 border-blue-300 rounded-lg p-6">
+                            <h4 className="font-bold text-blue-900 mb-3">📍 CLAIM: What is Meta's implicit ethical claim?</h4>
+                            <p className="text-sm text-gray-600 mb-3">
+                                Example: "It's ethically permissible to maximize engagement even when it harms users' 
+                                psychological well-being"
+                            </p>
+                            <textarea
+                                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 resize-none"
+                                rows="3"
+                                placeholder="Write Meta's implicit ethical claim here..."
+                                value={toulminConstruction.claim}
+                                onChange={(e) => setToulminConstruction({...toulminConstruction, claim: e.target.value})}
+                            />
+                            {!showAdditionalFields && (
+                                <p className="text-xs text-gray-500 mt-2">
+                                    Write at least 20 characters to unlock the next sections
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Additional fields controlled via opacity to keep layout stable */}
+                        <div style={{ 
+                            opacity: showAdditionalFields ? 1 : 0.3,
+                            pointerEvents: showAdditionalFields ? 'auto' : 'none',
+                            transition: 'opacity 0.3s ease'
+                        }}>
+                            <div className="bg-white border-2 border-green-300 rounded-lg p-6">
+                                <h4 className="font-bold text-green-900 mb-3">🔍 GROUNDS: What evidence supports this claim?</h4>
+                                <p className="text-sm text-gray-600 mb-3">
+                                    What facts or observations would Meta point to? (Check all that apply)
+                                </p>
+                                {[
+                                    'Users voluntarily sign up and continue using the platform',
+                                    'Terms of service are publicly available',
+                                    'Users can delete their accounts at any time',
+                                    'Platform provides value (social connection, entertainment)',
+                                    'Engagement metrics show users "enjoy" the platform',
+                                    'Other companies do the same thing'
+                                ].map((ground, i) => (
+                                    <label key={i} className="flex items-start space-x-2 mb-2">
+                                        <input
+                                            type="checkbox"
+                                            className="mt-1"
+                                            checked={toulminConstruction.grounds.includes(ground)}
+                                            onChange={(e) => {
+                                                const newGrounds = e.target.checked
+                                                    ? [...toulminConstruction.grounds, ground]
+                                                    : toulminConstruction.grounds.filter(g => g !== ground);
+                                                setToulminConstruction({...toulminConstruction, grounds: newGrounds});
+                                            }}
+                                        />
+                                        <span className="text-sm text-gray-700">{ground}</span>
+                                    </label>
+                                ))}
+                            </div>
+
+                            <div className="bg-white border-2 border-purple-300 rounded-lg p-6 mt-4">
+                                <h4 className="font-bold text-purple-900 mb-3">🔗 WARRANT: What connects grounds to claim?</h4>
+                                <p className="text-sm text-gray-600 mb-3">
+                                    What principle or reasoning links the evidence to the conclusion?
+                                </p>
+                                <textarea
+                                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 resize-none"
+                                    rows="3"
+                                    placeholder="Example: 'If users voluntarily choose to use a platform, then the platform bears no responsibility for harms...'"
+                                    value={toulminConstruction.warrant}
+                                    onChange={(e) => setToulminConstruction({...toulminConstruction, warrant: e.target.value})}
+                                />
+                            </div>
+
+                            <div className="bg-red-50 border-2 border-red-300 rounded-lg p-6 mt-4">
+                                <h4 className="font-bold text-red-900 mb-3">🚫 REBUTTALS: Where does this argument fail?</h4>
+                                <p className="text-sm text-gray-600 mb-3">
+                                    Using coherence analysis, identify the weaknesses:
+                                </p>
+                                {[
+                                    '"Voluntary use" assumes intact coherence - but Meta systematically degrades it',
+                                    'Cannot consent to something that undermines capacity to consent',
+                                    'Terms of service assume users can parse 10,000+ words of legalese',
+                                    'Platform provides value AND extracts coherence - net harm question',
+                                    'Other companies doing it doesn\'t make it ethical',
+                                    'Engagement metrics measure addiction, not flourishing'
+                                ].map((rebuttal, i) => (
+                                    <label key={i} className="flex items-start space-x-2 mb-2">
+                                        <input
+                                            type="checkbox"
+                                            className="mt-1"
+                                            checked={toulminConstruction.rebuttals.includes(rebuttal)}
+                                            onChange={(e) => {
+                                                const newRebuttals = e.target.checked
+                                                    ? [...toulminConstruction.rebuttals, rebuttal]
+                                                    : toulminConstruction.rebuttals.filter(r => r !== rebuttal);
+                                                setToulminConstruction({...toulminConstruction, rebuttals: newRebuttals});
+                                            }}
+                                        />
+                                        <span className="text-sm text-gray-700">{rebuttal}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Phase 3: Personal Application
+        const MetaPersonalPhase = ({ personalAssessment, setPersonalAssessment }) => {
+            const platforms = [
+                { id: 'instagram', name: 'Instagram', icon: '📷' },
+                { id: 'tiktok', name: 'TikTok', icon: '🎵' },
+                { id: 'twitter', name: 'Twitter/X', icon: '🐦' },
+                { id: 'facebook', name: 'Facebook', icon: '👥' },
+                { id: 'snapchat', name: 'Snapchat', icon: '👻' }
+            ];
+
+            return (
+                <div className="space-y-6">
+                    <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-6">
+                        <h3 className="text-xl font-bold text-yellow-900 mb-3">📱 Assess YOUR Social Media Coherence</h3>
+                        <p className="text-gray-700 mb-3">
+                            This isn't about judgment - it's about self-knowledge. For the platform you use most, 
+                            rate how it affects each coherence dimension.
+                        </p>
+                        <p className="text-sm text-gray-600">
+                            1 = Strongly preserves, 3 = Neutral, 5 = Strongly compromises
+                        </p>
+                    </div>
+
+                    <div className="bg-white border-2 border-gray-300 rounded-lg p-6">
+                        <h4 className="font-bold mb-3">Select Your Primary Platform:</h4>
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                            {platforms.map(platform => (
+                                <button
+                                    key={platform.id}
+                                    onClick={() => setPersonalAssessment({...personalAssessment, platform: platform.id})}
+                                    className={`p-4 border-2 rounded-lg text-center ${
+                                        personalAssessment.platform === platform.id
+                                            ? 'border-purple-500 bg-purple-50'
+                                            : 'border-gray-300 hover:border-gray-400'
+                                    }`}
+                                >
+                                    <div className="text-3xl mb-1">{platform.icon}</div>
+                                    <div className="text-sm font-semibold">{platform.name}</div>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {personalAssessment.platform && (
+                        <div className="space-y-4">
+                            {['BRC', 'CIC', 'KIC', 'TNC', 'ISC'].map(dim => {
+                                const labels = {
+                                    BRC: 'Sleep, stress, emotional regulation',
+                                    CIC: 'Mental clarity, ability to focus',
+                                    KIC: 'Authentic self vs. performative self',
+                                    TNC: 'Long-term thinking vs. immediate gratification',
+                                    ISC: 'Platform supports your goals vs. exploits you'
+                                };
+
+                                return (
+                                    <div key={dim} className="bg-gray-50 border-2 border-gray-300 rounded-lg p-6">
+                                        <div className="flex justify-between items-center mb-3">
+                                            <div>
+                                                <h5 className="font-bold text-gray-900">{dim}</h5>
+                                                <p className="text-sm text-gray-600">{labels[dim]}</p>
+                                            </div>
+                                            <span className="text-2xl font-bold text-purple-600">
+                                                {personalAssessment[dim]}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center space-x-3">
+                                            <span className="text-xs font-semibold text-green-700">Preserves</span>
+                                            <input
+                                                type="range"
+                                                min="1"
+                                                max="5"
+                                                value={personalAssessment[dim]}
+                                                onChange={(e) => setPersonalAssessment({
+                                                    ...personalAssessment,
+                                                    [dim]: parseInt(e.target.value)
+                                                })}
+                                                className="flex-1"
+                                            />
+                                            <span className="text-xs font-semibold text-red-700">Compromises</span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+
+                    {(() => {
+                        const dimensions = ['BRC', 'CIC', 'KIC', 'TNC', 'ISC'];
+                        const allRated = personalAssessment.platform && 
+                                         dimensions.every(dim => personalAssessment[dim] !== undefined);
+                        
+                        if (allRated) {
+                            const avgScore = dimensions.reduce((sum, dim) => sum + personalAssessment[dim], 0) / 5;
+                            const highCompromise = dimensions.filter(dim => personalAssessment[dim] >= 4);
+                            
+                            return (
+                                <div className="bg-blue-50 border-2 border-blue-400 rounded-lg p-6">
+                                    <h4 className="font-bold text-blue-900 mb-3">Your Coherence Assessment Results</h4>
+                                    <div className="grid md:grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <p className="text-sm font-semibold text-gray-700 mb-2">Dimensions Most Compromised:</p>
+                                            <ul className="text-sm text-gray-700 space-y-1">
+                                                {highCompromise.length > 0 ? (
+                                                    highCompromise.map(dim => (
+                                                        <li key={dim}>• {dim} (Score: {personalAssessment[dim]}/5)</li>
+                                                    ))
+                                                ) : (
+                                                    <li className="text-green-700">None severely compromised!</li>
+                                                )}
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-semibold text-gray-700 mb-2">Overall Pattern:</p>
+                                            <p className="text-sm text-gray-700">
+                                                Average score: {avgScore.toFixed(1)}/5
+                                            </p>
+                                            <p className="text-xs text-gray-600 mt-2">
+                                                {avgScore >= 3.5
+                                                    ? 'Significant coherence extraction detected. Consider limiting use or changing platforms.'
+                                                    : 'Moderate impact. Stay aware of how it affects you.'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="bg-white border-l-4 border-blue-600 p-4">
+                                        <p className="text-sm text-gray-700">
+                                            <strong>Remember:</strong> This isn't about moral judgment. It's about understanding 
+                                            how systems affect YOUR coherence. Armed with this knowledge, you can make informed choices 
+                                            about when/how/whether to engage.
+                                        </p>
+                                    </div>
+                                </div>
+                            );
+                        }
+                        return null;
+                    })()}
+                </div>
+            );
+        };
+
+        // Phase 4: Synthesis
+        const MetaSynthesisPhase = ({ showBiologicalAnalogue, setShowBiologicalAnalogue }) => (
+            <div className="space-y-6">
+                <div className="bg-gradient-to-br from-purple-100 to-blue-100 border-2 border-purple-400 rounded-lg p-6">
+                    <h3 className="text-2xl font-bold text-purple-900 mb-4">🎯 Key Takeaways</h3>
+                    
+                    <div className="space-y-4">
+                        <div className="bg-white border-l-4 border-purple-600 p-4 rounded">
+                            <h4 className="font-bold text-purple-900 mb-2">1. Coherence Extraction is Systematic</h4>
+                            <p className="text-sm text-gray-700">
+                                Meta doesn't just harm ONE dimension - it compromises ALL FIVE simultaneously. 
+                                This isn't accidental; it's how engagement optimization works.
+                            </p>
+                        </div>
+
+                        <div className="bg-white border-l-4 border-blue-600 p-4 rounded">
+                            <h4 className="font-bold text-blue-900 mb-2">2. "Voluntary Use" Requires Intact Coherence</h4>
+                            <p className="text-sm text-gray-700">
+                                You can't consent to something that systematically undermines your capacity to consent. 
+                                Traditional ethics focused on consent assumes coherence - but what happens when consent 
+                                itself requires the very capacities being extracted?
+                            </p>
+                        </div>
+
+                        <div className="bg-white border-l-4 border-green-600 p-4 rounded">
+                            <h4 className="font-bold text-green-900 mb-2">3. This Isn't About Individual Moral Failure</h4>
+                            <p className="text-sm text-gray-700">
+                                If you struggle to put your phone down, it's not because you're weak. It's because 
+                                billion-dollar companies employ teams of engineers to make it as difficult as possible. 
+                                Agency hijacking isn't a moral defect - it's a structural vulnerability.
+                            </p>
+                        </div>
+
+                        <div className="bg-white border-l-4 border-yellow-600 p-4 rounded">
+                            <h4 className="font-bold text-yellow-900 mb-2">4. Responsibility Shifts to Designers</h4>
+                            <p className="text-sm text-gray-700">
+                                When systems extract coherence faster than individuals can restore it, ethical responsibility 
+                                moves from users to designers, institutions, and regulators. This is a design ethics problem, 
+                                not just an individual ethics problem.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <button
+                    onClick={() => setShowBiologicalAnalogue(!showBiologicalAnalogue)}
+                    className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700"
+                >
+                    {showBiologicalAnalogue ? '▼' : '▶'} Optional: Biological Analogues (Advanced)
+                </button>
+
+                {showBiologicalAnalogue && (
+                    <div className="bg-indigo-50 border-2 border-indigo-400 rounded-lg p-6">
+                        <h4 className="font-bold text-indigo-900 mb-3">🔬 Cross-Level Pattern: Agency Hijacking</h4>
+                        <p className="text-gray-700 mb-4">
+                            This pattern isn't unique to technology. It appears across biological levels:
+                        </p>
+
+                        <div className="space-y-4">
+                            <div className="bg-white p-4 rounded border-l-4 border-indigo-600">
+                                <h5 className="font-bold text-indigo-900 mb-2">Horsehair Worm → Cricket</h5>
+                                <p className="text-sm text-gray-700">
+                                    Parasite alters cricket's neurochemistry. Cricket "voluntarily" enters water 
+                                    (which crickets normally avoid), where worm emerges. Cricket's motor control intact, 
+                                    but internal valuation system reprogrammed to serve parasite's reproductive needs.
+                                </p>
+                            </div>
+
+                            <div className="bg-white p-4 rounded border-l-4 border-indigo-600">
+                                <h5 className="font-bold text-indigo-900 mb-2">HIV → Immune System</h5>
+                                <p className="text-sm text-gray-700">
+                                    Virus doesn't destroy immune cells - it exploits regulatory pathways, induces tolerance, 
+                                    reprograms signaling. Immune system continues functioning but in degraded mode benefiting pathogen.
+                                </p>
+                            </div>
+
+                            <div className="bg-white p-4 rounded border-l-4 border-indigo-600">
+                                <h5 className="font-bold text-indigo-900 mb-2">Meta → User</h5>
+                                <p className="text-sm text-gray-700">
+                                    Platform doesn't force engagement - it alters attentional salience, reward timing, 
+                                    identity validation loops. Users act in ways contrary to own interests while feeling 
+                                    internally motivated.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="bg-yellow-50 border-l-4 border-yellow-600 p-4 mt-4">
+                            <p className="text-sm font-semibold text-gray-800">
+                                Important: This is NOT saying "Meta is a parasite" (moral accusation). It's identifying 
+                                a STRUCTURAL PATTERN: internal control systems repurposed for external optimization goals. 
+                                Different substrates, same vulnerability. This is OS2-level analysis.
+                            </p>
+                        </div>
+                    </div>
+                )}
+
+                <div className="bg-green-50 border-2 border-green-400 rounded-lg p-6">
+                    <h4 className="font-bold text-green-900 mb-3">💡 What Would Coherence-Preserving Design Look Like?</h4>
+                    <p className="text-gray-700 mb-3">Discussion questions for next class:</p>
+                    <ul className="space-y-2 text-gray-700 text-sm">
+                        <li>• Could social media exist without engagement optimization?</li>
+                        <li>• What business models support coherence rather than extracting it?</li>
+                        <li>• Should platforms be legally required to protect user coherence?</li>
+                        <li>• How would you redesign Instagram to preserve all 5 dimensions?</li>
+                        <li>• What role should government regulation play?</li>
+                    </ul>
+                </div>
+            </div>
+        );
+
+        // ============================================================================
+        // META CASE STUDY - MAIN CONTAINER
+        // ============================================================================
+        function MetaCaseSection({ onComplete, onNext }) {
+            const [currentPhase, setCurrentPhase] = useState(0);
+            const [dimensionAnalysis, setDimensionAnalysis] = useState({});
+            const [toulminConstruction, setToulminConstruction] = useState({
+                claim: '',
+                grounds: [],
+                warrant: '',
+                backing: '',
+                rebuttals: []
+            });
+            // Initialize with defaults to match visual UI
+            const [personalAssessment, setPersonalAssessment] = useState({
+                BRC: 3, KIC: 3, CIC: 3, ISC: 3, TNC: 3
+            });
+            const [showBiologicalAnalogue, setShowBiologicalAnalogue] = useState(false);
+
+            const phases = [
+                {
+                    id: 'background',
+                    title: 'The Case: Meta & Instagram',
+                    canProgress: true
+                },
+                {
+                    id: 'dimensions',
+                    title: 'Coherence Analysis',
+                    canProgress: () => {
+                        const dimensions = ['BRC', 'KIC', 'CIC', 'ISC', 'TNC'];
+                        return dimensions.every(dim => dimensionAnalysis[dim] !== undefined);
+                    }
+                },
+                {
+                    id: 'toulmin',
+                    title: 'Build the Argument',
+                    canProgress: () => toulminConstruction.claim.length > 20
+                },
+                {
+                    id: 'personal',
+                    title: 'Personal Application',
+                    canProgress: () => {
+                        const dimensions = ['BRC', 'KIC', 'CIC', 'ISC', 'TNC'];
+                        return personalAssessment.platform && 
+                               dimensions.every(dim => personalAssessment[dim] !== undefined);
+                    }
+                },
+                {
+                    id: 'synthesis',
+                    title: 'Synthesis & Implications',
+                    canProgress: true
+                }
+            ];
+
+            const canProgressPhase = () => {
+                const phase = phases[currentPhase];
+                if (typeof phase.canProgress === 'function') {
+                    return phase.canProgress();
+                }
+                return phase.canProgress;
+            };
 
             return (
                 <div className="bg-white rounded-lg shadow-lg p-8">
                     <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                        OS1 & OS2: Two Complementary Capacities
+                        Case Study: Meta & Coherence Extraction
                     </h2>
+                    
+                    <div className="flex space-x-2 mb-6">
+                        {phases.map((phase, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => currentPhase > idx && setCurrentPhase(idx)}
+                                disabled={currentPhase < idx}
+                                className={`flex-1 px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                                    currentPhase === idx 
+                                        ? 'bg-purple-600 text-white' 
+                                        : currentPhase > idx
+                                        ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                }`}
+                            >
+                                {currentPhase > idx && '✓ '}
+                                {phase.title}
+                            </button>
+                        ))}
+                    </div>
 
-                    <p className="text-xl text-gray-700 mb-6">
-                        Think of ethical reasoning as having two "operating systems" that work together:
-                    </p>
-
-                    {/* OS1 */}
                     <div className="mb-6">
-                        <button
-                            onClick={() => setExpanded(expanded === 'os1' ? null : 'os1')}
-                            aria-expanded={expanded === 'os1'}
-                            className="w-full text-left bg-blue-50 hover:bg-blue-100 p-6 rounded-lg border-2 border-blue-200 transition-colors"
-                        >
-                            <div className="flex justify-between items-center">
-                                <div>
-                                    <h3 className="text-2xl font-bold text-blue-900">OS1: Phenomenological Reference Frame</h3>
-                                    <p className="text-gray-700 mt-2">The "how it feels" layer - living ethical experience</p>
-                                </div>
-                                <span className="text-2xl" aria-hidden="true">{expanded === 'os1' ? '▼' : '▶'}</span>
-                            </div>
-                        </button>
-
-                        {expanded === 'os1' && (
-                            <div className="mt-4 p-6 bg-gray-50 rounded-lg">
-                                <p className="text-gray-700 mb-4">
-                                    OS1 is what traditional ethics courses teach well: rigorous ethical reasoning from 
-                                    within the lived experience of making moral choices.
-                                </p>
-                                <ul className="space-y-2 text-gray-700">
-                                    <li>• Phenomenological engagement with ethical dilemmas</li>
-                                    <li>• Conceptual analysis (what does "justice" mean?)</li>
-                                    <li>• Argument construction and evaluation</li>
-                                    <li>• Framework application (deontology, consequentialism, virtue)</li>
-                                    <li>• Case analysis and intuition refinement</li>
-                                </ul>
-                                <p className="text-gray-700 mt-4 font-semibold">
-                                    Why OS1 is essential: These are foundational skills for rigorous ethical reasoning.
-                                </p>
-                            </div>
+                        {currentPhase === 0 && <MetaBackgroundPhase />}
+                        
+                        {currentPhase === 1 && (
+                            <MetaDimensionPhase 
+                                dimensionAnalysis={dimensionAnalysis} 
+                                setDimensionAnalysis={setDimensionAnalysis} 
+                            />
+                        )}
+                        
+                        {currentPhase === 2 && (
+                            <MetaToulminPhase 
+                                toulminConstruction={toulminConstruction} 
+                                setToulminConstruction={setToulminConstruction} 
+                            />
+                        )}
+                        
+                        {currentPhase === 3 && (
+                            <MetaPersonalPhase 
+                                personalAssessment={personalAssessment} 
+                                setPersonalAssessment={setPersonalAssessment} 
+                            />
+                        )}
+                        
+                        {currentPhase === 4 && (
+                            <MetaSynthesisPhase 
+                                showBiologicalAnalogue={showBiologicalAnalogue} 
+                                setShowBiologicalAnalogue={setShowBiologicalAnalogue} 
+                            />
                         )}
                     </div>
 
-                    {/* OS2 */}
-                    <div className="mb-6">
+                    <div className="flex justify-between">
                         <button
-                            onClick={() => setExpanded(expanded === 'os2' ? null : 'os2')}
-                            aria-expanded={expanded === 'os2'}
-                            className="w-full text-left bg-purple-50 hover:bg-purple-100 p-6 rounded-lg border-2 border-purple-200 transition-colors"
+                            onClick={() => setCurrentPhase(Math.max(0, currentPhase - 1))}
+                            disabled={currentPhase === 0}
+                            className={`px-6 py-3 rounded-lg font-semibold ${
+                                currentPhase === 0
+                                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                    : 'bg-gray-300 hover:bg-gray-400'
+                            }`}
                         >
-                            <div className="flex justify-between items-center">
-                                <div>
-                                    <h3 className="text-2xl font-bold text-purple-900">OS2: Meta-Constructor Capacity</h3>
-                                    <p className="text-gray-700 mt-2">The "modeling our modeling" layer - reflective awareness</p>
-                                </div>
-                                <span className="text-2xl" aria-hidden="true">{expanded === 'os2' ? '▼' : '▶'}</span>
-                            </div>
+                            ← Previous
                         </button>
-
-                        {expanded === 'os2' && (
-                            <div className="mt-4 p-6 bg-gray-50 rounded-lg">
-                                <p className="text-gray-700 mb-4">
-                                    OS2 is the capacity to step back and model how ethical reasoning happens—including how 
-                                    your standpoint shapes what you can see.
-                                </p>
-                                <ul className="space-y-2 text-gray-700">
-                                    <li>• Standpoint awareness: How does my position shape what I see?</li>
-                                    <li>• Gate recognition: What institutional filters determine valid knowledge?</li>
-                                    <li>• Constructor analysis: What procedures produce ethical knowledge?</li>
-                                    <li>• Meta-constructor design: How can systems learn and adapt?</li>
-                                    <li>• Multi-perspective synthesis: What's visible from other standpoints?</li>
-                                </ul>
-                                <p className="text-gray-700 mt-4 font-semibold">
-                                    Why OS2 matters: Reveals patterns invisible from within OS1 alone.
-                                </p>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Sapolsky */}
-                    <div className="bg-gradient-to-br from-red-100 to-orange-100 border-2 border-red-300 p-6 rounded-lg mb-6">
-                        <h3 className="text-xl font-bold text-red-900 mb-3">The Sapolsky Problem & Resolution</h3>
-                        <p className="text-gray-700 mb-3">
-                            Neuroscientist Robert Sapolsky argues we're fully determined by physics and our past. 
-                            If true, ethical reasoning seems pointless.
-                        </p>
-                        <div className="bg-white p-4 rounded mb-3">
-                            <p className="font-semibold text-red-900 mb-2">The Meta-Constructor Response:</p>
-                            <p className="text-sm text-gray-700">
-                                When agents can build meta-constructors (models of themselves that they use to guide themselves), 
-                                this creates genuine degrees of freedom. Not libertarian free will, but real options at t+1 that 
-                                depend on how we model ourselves at t. The model itself has causal power.
-                            </p>
+                        
+                        <div className="flex flex-col items-end">
+                            {currentPhase < phases.length - 1 ? (
+                                <>
+                                    <button
+                                        onClick={() => {
+                                            if (canProgressPhase()) {
+                                                setCurrentPhase(currentPhase + 1);
+                                            }
+                                        }}
+                                        disabled={!canProgressPhase()}
+                                        className={`px-6 py-3 rounded-lg font-semibold ${
+                                            canProgressPhase()
+                                                ? 'bg-purple-600 text-white hover:bg-purple-700'
+                                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                        }`}
+                                    >
+                                        Next →
+                                    </button>
+                                    {!canProgressPhase() && (
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            {currentPhase === 1 && 'Complete all 5 dimension analyses to continue'}
+                                            {currentPhase === 2 && 'Write your claim (20+ characters) to continue'}
+                                            {currentPhase === 3 && 'Select platform and rate all 5 dimensions to continue'}
+                                        </p>
+                                    )}
+                                </>
+                            ) : (
+                                <button
+                                    onClick={() => { onComplete(); onNext(); }}
+                                    className="px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700"
+                                >
+                                    Continue to Toulmin + Coherence →
+                                </button>
+                            )}
                         </div>
                     </div>
-
-                    <button
-                        onClick={() => { onComplete(); onNext(); }}
-                        className="w-full px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors focus:ring-4 focus:ring-purple-300"
-                    >
-                        Continue to FAIM-QIRF Notation →
-                    </button>
                 </div>
             );
         }
